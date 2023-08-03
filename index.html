@@ -11,9 +11,12 @@
   @font-face {
     font-family: "Lora"; 
     src: url("Lora-Regular.ttf");}
-  body {background-image: url("marble3000.jpg");
+  @font-face {
+    font-family: "Mono"; 
+    src: url("MartianMono-Variable.ttf");}
+  body {background-image: url("marble3.jpg");
         background-attachment: fixed;}
-  h1 {margin-left: 60px;}
+  h1 {margin-left: 75px;}
   *:not(h1) {
     font-family: "Lora"; 
     font-size: 24px;}
@@ -23,26 +26,37 @@
     border: #bcbcbc solid 1px;
     border-radius: 5px;}
   div, label {margin-top: 2px;}
-  .date {
+  span, input {margin-right: 5px;}
+  .date, .city {
     font-family: sans-serif;
-    font-stretch: ultra-condensed;
-    margin: 0 5px; 
-    color: navy;}
+    font-stretch: ultra-condensed;}
+  .date {color: #01579B;}
+  .city {color: #9f6060;}
   input {
     padding-left: 5px; 
-    margin-right: 5px;
     border: #bcbcbc solid 1px;}
   #plus {
-    padding: 0 30px; 
+    padding: 0 40px; 
     background-color: #ace600;}
-  .remove {color: #9f6060; font-weight: bold;}
-  /* https://www.w3schools.com/colors/colors_picker.asp */
+  #clear {
+    padding: 0 40px; 
+    background-color: #ffcce6;}
+  /*
+  .remove {color: #9f6060; font-weight: bold; font-family: "Script";}
+  https://www.w3schools.com/colors/colors_picker.asp */
 </style>
 </head>
 <body>
   <h1>FOE todo</h1>
-  <label for="timeInput">Time:</label>
-  <input type="text" id="timeInput" size="8" onfocus="this.select();" placeholder="2:12:30"><br>
+  <label>City:</label>&nbsp;
+  <input type="radio" name="city" value="1" checked><label for="html">1</label>&nbsp;
+  <input type="radio" name="city" value="2"><label>2</label>&nbsp;
+  <input type="radio" name="city" value="3"><label>3</label>&nbsp;
+  <input type="radio" name="city" value="4"><label>4</label>&nbsp;
+  <input type="radio" name="city" value="5"><label>5</label><br>
+  <label>Time:</label>
+  <input type="text" id="timeInput" size="8" onfocus="this.select();" placeholder="2:12:30">
+  <button onclick="clearTimeOffset()" id="clear">×</button><br>
   <button onclick="addPresetTime('0:01:00')">1h</button>
   <button onclick="addPresetTime('0:04:00')">4h</button>
   <button onclick="addPresetTime('0:08:00')">8h</button>
@@ -75,14 +89,23 @@
       return Date.now() + totalMinutes * 1000;
     }
 
+    function clearTimeOffset() {
+      if(confirm('Clear all?')){
+        localStorage.removeItem("offsets");
+        updateOffsetList([]);
+        console.log("Done.")
+      }
+    }
     function addTimeOffset() {
       const timeInput = document.getElementById("timeInput");
       const noteInput = document.getElementById("noteInput");
+      const cityInput = document.querySelector('input[name="city"]:checked');
       const epochTime = parseTimeString(timeInput.value);
 
       const offsetObject = {
         timestamp: epochTime,
         note: noteInput.value,
+        city: cityInput.value
       };
 
       let offsetList = JSON.parse(localStorage.getItem("offsets")) || [];
@@ -126,6 +149,12 @@
         };
         // removeButton.onclick = i => removeOffset(i);
         listItem.appendChild(removeButton);
+
+        // Create a city string for each item
+        const cityItem = document.createElement("span");
+        cityItem.textContent = `${offset.city}`;
+        cityItem.className = "city";
+        listItem.appendChild(cityItem);
 
         // Create a date string for each item
         const dateItem = document.createElement("span");
