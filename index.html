@@ -15,7 +15,7 @@
         background-attachment: fixed;}
   *:not(h1) {
     font-family: "Lora"; 
-    font-size: 28px;}
+    font-size: 24px;}
   button {
     padding: 0 20px;
     margin: 10px 5px 0 0;
@@ -32,7 +32,7 @@
     margin-right: 5px;
     border: #bcbcbc solid 1px;}
   #plus {
-    padding: 0 40px; 
+    padding: 0 30px; 
     background-color: #ace600;}
   .remove {color: #9f6060; font-weight: bold;}
   /* https://www.w3schools.com/colors/colors_picker.asp */
@@ -41,13 +41,13 @@
 <body>
   <h1>FOE todo</h1>
   <label for="timeInput">Time:</label>
-  <input type="text" id="timeInput" size="10" onfocus="this.select();" placeholder="2:12:30"><br>
+  <input type="text" id="timeInput" size="8" onfocus="this.select();" placeholder="2:12:30"><br>
   <button onclick="addPresetTime('0:01:00')">1h</button>
   <button onclick="addPresetTime('0:04:00')">4h</button>
   <button onclick="addPresetTime('0:08:00')">8h</button>
   <button onclick="addPresetTime('1:00:00')">1d</button><br>
   <label for="noteInput">Note:</label>
-  <input type="text" id="noteInput" size="10" onfocus="this.select();" placeholder="Enter note">
+  <input type="text" id="noteInput" size="8" onfocus="this.select();" placeholder="Enter note">
   <button onclick="addTimeOffset()" id="plus">+</button><br>
   <button onclick="addPresetNote('Coins')">C</button>
   <button onclick="addPresetNote('Supplies')">S</button>
