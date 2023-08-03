@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Time Offsets</title>
+</head>
+<style>
+@font-face {
+  font-family: "Lora"; 
+  src: url("Lora-Regular.ttf");}
+body {background-image: url("marble3000.jpg");
+      background-attachment: fixed;}
+*:not(h1) {
+  font-family: "Lora"; 
+  font-size: 28px;}
+button {
+  padding: 0 20px;
+  margin: 10px 5px 0 0;
+  border: #bcbcbc solid 1px;
+  border-radius: 5px;}
+div, label {margin-top: 2px;}
+.date {
+  font-family: sans-serif;
+  font-stretch: ultra-condensed;
+  margin: 0 5px; 
+  color: navy;}
+input {
+  padding-left: 5px; 
+  margin-right: 5px;
+  border: #bcbcbc solid 1px;}
+#plus {
+  padding: 0 40px; 
+  background-color: #ace600;}
+.remove {color: #9f6060; font-weight: bold;}
+/* https://www.w3schools.com/colors/colors_picker.asp */
+</style>
+<body>
+  <h1>Time Offsets</h1>
+  <label for="timeInput">Time:</label>
+  <input type="text" id="timeInput" size="10" onfocus="this.select();" placeholder="2:12:30"><br>
+  <button onclick="addPresetTime('0:01:00')">1h</button>
+  <button onclick="addPresetTime('0:04:00')">4h</button>
+  <button onclick="addPresetTime('0:08:00')">8h</button>
+  <button onclick="addPresetTime('1:00:00')">1d</button><br>
+  <label for="noteInput">Note:</label>
+  <input type="text" id="noteInput" size="10" onfocus="this.select();" placeholder="Enter note">
+  <button onclick="addTimeOffset()" id="plus">+</button><br>
+  <button onclick="addPresetNote('Coins')">C</button>
+  <button onclick="addPresetNote('Supplies')">S</button>
+  <button onclick="addPresetNote('Production')">P</button>
+  <button onclick="addPresetNote('Event')">E</button>
+  <div id="offsetList"></div>
+
+  <script>
+    function addPresetTime(time){
+      document.getElementById("timeInput").value = time;
+    }
+
+    function addPresetNote(note){
+      document.getElementById("noteInput").value = note;
+    }
+
+    function parseTimeString(timeString) {
+      let totalMinutes = 0, 
+        timeSlots = timeString.split(':').reverse() || [0];
+
+      for (let i = 0; i < timeSlots.length; i++) {
+        totalMinutes += timeSlots[i] * [60, 60*60, 60*60*24][i];
+      }
+      return Date.now() + totalMinutes * 1000;
+    }
+
+    function addTimeOffset() {
+      const timeInput = document.getElementById("timeInput");
+      const noteInput = document.getElementById("noteInput");
+      const epochTime = parseTimeString(timeInput.value);
+
+      const offsetObject = {
+        timestamp: epochTime,
+        note: noteInput.value,
+      };
+
+      let offsetList = JSON.parse(localStorage.getItem("offsets")) || [];
+      offsetList.push(offsetObject);
+
+      // Sort the list in descending order by timestamp
+      offsetList.sort(); // ((a, b) => b.timestamp - a.timestamp);
+
+      // Save the updated list to localStorage
+      localStorage.setItem("offsets", JSON.stringify(offsetList));
+
+      updateOffsetList(offsetList);
+      timeInput.value = noteInput.value = '';
+    }
+
+    function removeOffset(index) {
+      let offsetList = JSON.parse(localStorage.getItem("offsets")) || [];
+      offsetList.splice(index, 1);
+      localStorage.setItem("offsets", JSON.stringify(offsetList));
+      updateOffsetList(offsetList);
+    }
+
+    function updateOffsetList(offsetList) {
+      const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+      const offsetListElement = document.getElementById("offsetList");
+      offsetListElement.innerHTML = "";
+
+      for (let i = 0; i < offsetList.length; i++) {
+        const offset = offsetList[i];
+        const timestamp = (new Date(offset.timestamp - tzoffset)).toISOString();
+        // console.log(timestamp);
+
+        const listItem = document.createElement("div");
+
+        // Create a remove button for each item
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "×";
+        removeButton.className = "remove";
+        removeButton.onclick = function () {
+          removeOffset(i);
+        };
+        // removeButton.onclick = i => removeOffset(i);
+        listItem.appendChild(removeButton);
+
+        // Create a date string for each item
+        const dateItem = document.createElement("span");
+        dateItem.textContent = `${timestamp.substr(5,5)} ${timestamp.substr(11,5)}`;
+        dateItem.className = "date";
+        listItem.appendChild(dateItem);
+
+        // Create a note string for each item
+        const noteItem = document.createElement("span");
+        noteItem.textContent = `${offset.note}`;
+        listItem.appendChild(noteItem);
+
+        offsetListElement.appendChild(listItem);
+      }
+    }
+
+    // Initial update of the offset list on page load
+    const initialOffsetList = JSON.parse(localStorage.getItem("offsets")) || [];
+    updateOffsetList(initialOffsetList);
+
+  </script>
+</body>
+</html>
+
