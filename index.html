@@ -14,9 +14,22 @@
   @font-face {
     font-family: "Mono"; 
     src: url("MartianMono-Variable.ttf");}
-  body {background-image: url("sandstone.png");
-        background-attachment: fixed;}
-  h1 {margin-left: 75px;}
+  body {
+    background-image: url("cartoon_path.jpg");
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;}
+  img {padding: 5px;}
+  h1 {
+    margin-left: 75px;
+    /*text-shadow: 2px 2px white;}*/
+    text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;} 
+  div, span {
+    display: inline-block; 
+    background-color: white; 
+    border-radius: 5px; 
+    margin-top: 2px; 
+    padding: 0 5px;}
   *:not(h1) {
     font-family: "Lora"; 
     font-size: 24px;}
@@ -25,7 +38,7 @@
     margin: 10px 5px 0 0;
     border: #bcbcbc solid 1px;
     border-radius: 5px;}
-  div, label {margin-top: 2px;}
+  .l {width: 65px;}
   span, input {margin-right: 5px;}
   .date, .city {
     font-family: sans-serif;
@@ -35,6 +48,9 @@
   input {
     padding-left: 5px; 
     border: #bcbcbc solid 1px;}
+  .item, #offsetList {background-color: transparent;}
+  span {background-color: white;}
+  #container {opacity: 1}
   #plus {
     padding: 0 40px; 
     background-color: #ace600;}
@@ -47,28 +63,29 @@
 </style>
 </head>
 <body>
+  <!--img src="Forge_of_Empires_Logo.webp"-->
   <h1>FOE todo</h1>
-  <label>City:</label>&nbsp;
-  <input type="radio" name="city" value="1" checked><label for="html">1</label>&nbsp;
-  <input type="radio" name="city" value="2"><label>2</label>&nbsp;
-  <input type="radio" name="city" value="3"><label>3</label>&nbsp;
-  <input type="radio" name="city" value="4"><label>4</label>&nbsp;
-  <input type="radio" name="city" value="5"><label>5</label><br>
-  <label>Time:</label>
-  <input type="text" id="timeInput" size="8" onfocus="this.select();" placeholder="2:12:30">
+  <!--div id=container-->
+  <div class=l>City:</div>&nbsp;
+  <input type="radio" name="city" value="1" checked><div>1</div>&nbsp;
+  <input type="radio" name="city" value="2"><div>2</div>&nbsp;
+  <input type="radio" name="city" value="3"><div>3</div>&nbsp;
+  <input type="radio" name="city" value="4"><div>4</div><br>
+  <div class=l>Time:</div>
+  <input type="text" id="timeInput" size="9" onfocus="this.select();" placeholder="2:12:30">
   <button onclick="clearTimeOffset()" id="clear">×</button><br>
   <button onclick="addPresetTime('0:01:00')">1h</button>
   <button onclick="addPresetTime('0:04:00')">4h</button>
   <button onclick="addPresetTime('0:08:00')">8h</button>
   <button onclick="addPresetTime('1:00:00')">1d</button><br>
-  <label for="noteInput">Note:</label>
-  <input type="text" id="noteInput" size="8" onfocus="this.select();" placeholder="Enter note">
+  <div class=l>Note:</div>
+  <input type="text" id="noteInput" size="9" onfocus="this.select();" placeholder="Enter note">
   <button onclick="addTimeOffset()" id="plus">+</button><br>
   <button onclick="addPresetNote('Coins')">C</button>
   <button onclick="addPresetNote('Supplies')">S</button>
   <button onclick="addPresetNote('Production')">P</button>
-  <button onclick="addPresetNote('Event')">E</button>
-  <div id="offsetList"></div>
+  <button onclick="addPresetNote('Event')">E</button><br>
+  <div id="offsetList"></div><!--/div-->
 
   <script>
     function addPresetTime(time){
@@ -139,6 +156,7 @@
         // console.log(timestamp);
 
         const listItem = document.createElement("div");
+        listItem.className = "item";
 
         // Create a remove button for each item
         const removeButton = document.createElement("button");
@@ -167,7 +185,9 @@
         noteItem.textContent = `${offset.note}`;
         listItem.appendChild(noteItem);
 
+
         offsetListElement.appendChild(listItem);
+        offsetListElement.appendChild(document.createElement("br"));
       }
     }
 
