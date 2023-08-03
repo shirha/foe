@@ -1,40 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Time Offsets</title>
-</head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="shortcut icon" type="image/png" href="favicon-512.png">
+  <title>FOE todo</title>
 <style>
-@font-face {
-  font-family: "Lora"; 
-  src: url("Lora-Regular.ttf");}
-body {background-image: url("marble3000.jpg");
-      background-attachment: fixed;}
-*:not(h1) {
-  font-family: "Lora"; 
-  font-size: 28px;}
-button {
-  padding: 0 20px;
-  margin: 10px 5px 0 0;
-  border: #bcbcbc solid 1px;
-  border-radius: 5px;}
-div, label {margin-top: 2px;}
-.date {
-  font-family: sans-serif;
-  font-stretch: ultra-condensed;
-  margin: 0 5px; 
-  color: navy;}
-input {
-  padding-left: 5px; 
-  margin-right: 5px;
-  border: #bcbcbc solid 1px;}
-#plus {
-  padding: 0 40px; 
-  background-color: #ace600;}
-.remove {color: #9f6060; font-weight: bold;}
-/* https://www.w3schools.com/colors/colors_picker.asp */
+  @font-face {
+    font-family: "Lora"; 
+    src: url("Lora-Regular.ttf");}
+  body {background-image: url("marble3000.jpg");
+        background-attachment: fixed;}
+  *:not(h1) {
+    font-family: "Lora"; 
+    font-size: 28px;}
+  button {
+    padding: 0 20px;
+    margin: 10px 5px 0 0;
+    border: #bcbcbc solid 1px;
+    border-radius: 5px;}
+  div, label {margin-top: 2px;}
+  .date {
+    font-family: sans-serif;
+    font-stretch: ultra-condensed;
+    margin: 0 5px; 
+    color: navy;}
+  input {
+    padding-left: 5px; 
+    margin-right: 5px;
+    border: #bcbcbc solid 1px;}
+  #plus {
+    padding: 0 40px; 
+    background-color: #ace600;}
+  .remove {color: #9f6060; font-weight: bold;}
+  /* https://www.w3schools.com/colors/colors_picker.asp */
 </style>
+</head>
 <body>
-  <h1>Time Offsets</h1>
+  <h1>FOE todo</h1>
   <label for="timeInput">Time:</label>
   <input type="text" id="timeInput" size="10" onfocus="this.select();" placeholder="2:12:30"><br>
   <button onclick="addPresetTime('0:01:00')">1h</button>
