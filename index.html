@@ -12,8 +12,8 @@
     font-family: "Lora"; 
     src: url("Lora-Regular.ttf");}
   @font-face {
-    font-family: "Mono"; 
-    src: url("MartianMono-Variable.ttf");}
+    font-family: "Script"; 
+    src: url("Tangerine-Regular.ttf");}
   body {
     background-image: url("cartoon_path.jpg");
     background-size: 100% 100%;
@@ -21,9 +21,15 @@
     background-attachment: fixed;}
   img {padding: 5px;}
   h1 {
-    font-style: italic;
+    font-family: "Script";
+    color: #ffc34d; 
     margin-left: 75px;
-    /*text-shadow: 2px 2px white;}*/
+    font-size: 96px;
+    letter-spacing: 5px;
+    margin: 16px 0 16px 75px;
+    /*
+    text-shadow: 2px 2px white;}
+    */
     text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;} 
   div, span {
     display: inline-block; 
@@ -68,7 +74,7 @@
 </head>
 <body>
   <!--img src="Forge_of_Empires_Logo.webp"-->
-  <h1>FOE todo</h1>
+  <h1>FoE&nbsp;&nbsp;todo</h1>
   <!--div id=container-->
   <div class=l>City:</div>&nbsp;
   <input type="radio" name="city" value="1" checked><div>1</div>&nbsp;
@@ -87,7 +93,7 @@
   <button onclick="addTimeOffset()" id="plus">+</button><br>
   <button onclick="addPresetNote('Coins')">C</button>
   <button onclick="addPresetNote('Supplies')">S</button>
-  <button onclick="addPresetNote('Production')">P</button>
+  <button onclick="addPresetNote('Goods')">G</button>
   <button onclick="addPresetNote('Event')">E</button><br>
   <div id="offsetList"></div><!--/div-->
 
@@ -133,7 +139,7 @@
       offsetList.push(offsetObject);
 
       // Sort the list in descending order by timestamp
-      offsetList.sort(); // ((a, b) => b.timestamp - a.timestamp);
+      offsetList.sort((a, b) => a.timestamp - b.timestamp); // ((a, b) => b.timestamp - a.timestamp);
 
       // Save the updated list to localStorage
       localStorage.setItem("offsets", JSON.stringify(offsetList));
