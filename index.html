@@ -82,23 +82,24 @@
   <input type="radio" name="city" value="3"><div>3</div>&nbsp;
   <input type="radio" name="city" value="4"><div>4</div><br>
   <div class=l>Time:</div>
-  <input type="text" id="timeInput" size="9" onfocus="this.select();" placeholder="2:12:30">
+  <input type="text" id="timeInput" size="9" placeholder="2:12:30" inputmode="numeric" pattern="[0-9]*">
   <button onclick="clearTimeOffset()" id="clear">×</button><br>
   <button onclick="addPresetTime('0:01:00')">1h</button>
   <button onclick="addPresetTime('0:04:00')">4h</button>
   <button onclick="addPresetTime('0:08:00')">8h</button>
   <button onclick="addPresetTime('1:00:00')">1d</button><br>
   <div class=l>Note:</div>
-  <input type="text" id="noteInput" size="9" onfocus="this.select();" placeholder="Enter note">
+  <input type="text" id="noteInput" size="9" placeholder="Enter note">
   <button onclick="addTimeOffset()" id="plus">+</button><br>
-  <button onclick="addPresetNote('Coins')">C</button>
-  <button onclick="addPresetNote('Supplies')">S</button>
+  <button onclick="addPresetNote('Scout')">S</button>
+  <button onclick="addPresetNote('Negotiate')">N</button>
   <button onclick="addPresetNote('Goods')">G</button>
   <button onclick="addPresetNote('Event')">E</button>
-  <button onclick="addPresetNote('Battle')">B</button><br>
+  <!--button onclick="addPresetNote('Battle')">B</button--><br>
   <div id="offsetList"></div><!--/div-->
 
   <script>
+     // onfocus="this.select();"
     function addPresetTime(time){
       document.getElementById("timeInput").value = time;
     }
