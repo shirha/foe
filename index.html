@@ -14,14 +14,9 @@
   @font-face {
     font-family: "Script"; 
     src: url("Tangerine-Regular.ttf");}
-  body {
-    background-image: url("cartoon_path.jpg");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-attachment: fixed;}
   img {padding: 5px;}
   h1 {
-    font-family: "Script";
+    font-family: cursive;
     color: #ffc34d; 
     margin-left: 75px;
     font-size: 64px;
@@ -58,9 +53,21 @@
     padding-left: 5px; 
     border: #bcbcbc solid 1px;}
   .item, #offsetList {background-color: transparent; padding:0;}
-  #offsetList { margin-top: 5px;}
+  .item { margin-top: 10px;}
+  #offsetList { margin-top: 0;}
   span {background-color: white;}
-  #container {opacity: 1}
+  html, body {
+    height: 100%;
+  }
+  #container {
+    display: block;
+    width: 600px;
+    height: 100%;}
+  body {
+    background-image: url("cartoon_path.jpg");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;}
   #plus {
     padding: 0 40px; 
     background-color: #ace600;}
@@ -96,7 +103,7 @@
   <button onclick="addPresetNote('Goods')">G</button>
   <button onclick="addPresetNote('Event')">E</button>
   <!--button onclick="addPresetNote('Battle')">B</button--><br>
-  <div id="offsetList"></div><!--/div-->
+  <div id="offsetList"></div></div>
 
   <script>
      // onfocus="this.select();"
