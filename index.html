@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="manifest" href="manifest.json">
+  <!--link rel="manifest" href="manifest.json"-->
   <link rel="shortcut icon" type="image/png" href="favicon-512.png">
   <title>FOE todo</title>
 <style>
@@ -253,6 +253,7 @@
       ["Space Age Venus", ["Glowing Seaweed", "Herbal Snack", "Microgreen Supplement", "Soy Proteins", "Sugar Crystals"]],
       ["Space Age Jupiter Moon", ["Advanced DNA Data", "Bio Creatures", "Enhanced Porifera", "Red Algae", "Topological Records"]]
     ];
+    const resource_index = {};
     const resourceList = document.getElementById('resource-list');
     const offsetList   = document.getElementById("container");
 
@@ -278,23 +279,16 @@
       const cityInput = document.querySelector('input[name="city"]:checked');
       const pattern = new RegExp(`foe${cityInput.value}_(.+)_deposit`);
       let goods = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        let key = localStorage.key(i);
+      Object.keys(localStorage).forEach(function(key){
         let result = key.match(pattern);
         if( result ){
-          // console.log(result[1]);
           goods.push(result[1]);
         }
-      }
+      });
+      console.log(goods);
       document.getElementById("deposits").innerHTML = 
-        goods.length ? goods.join(', ') : '&nbsp;';
-      // if(goods.length){
-      //   document.getElementById("deposits").innerHTML = goods.join(', ');
-      // }else{
-      //   document.getElementById("deposits").innerHTML = '&nbsp;';
-      // }
+        goods.length ? goods.sort((p1,p2) => resource_index[p1]-resource_index[p2]).join(', ') : '&nbsp;';
     }
-    deposits();
 
     let radio = document.querySelectorAll('input[type=radio]');
     for (let i = 0; i < radio.length; i++) {
@@ -321,7 +315,7 @@
     function resetTracker(){
       const cityInput = document.querySelector('input[name="city"]:checked');
       console.log(cityInput.value);
-      resources.forEach(([era, goods]) => {
+      resources.forEach(([era, goods],era_index) => {
         const eraButton = document.createElement('button');
         eraButton.textContent = era;
         resourceList.appendChild(eraButton);
@@ -331,7 +325,10 @@
         goodsContainer.style.display = 'none';
         resourceList.appendChild(goodsContainer);
 
-        goods.forEach(good => {
+        goods.forEach((good,good_index) => {
+          if(resource_init){
+            resource_index[good] = 10*era_index+good_index;
+          }
           const localStorageKey = 'foe' + cityInput.value + '_' + good; // Add 'foe_' prefix
           const tr = document.createElement('tr');
 
@@ -375,7 +372,10 @@
         });
       });
     }
+    let resource_init = true;
     resetTracker();
+    resource_init = false;
+    deposits();
 
     document.getElementById('msg').innerHTML = document.getElementById('resource-list').offsetWidth;
 
