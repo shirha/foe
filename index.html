@@ -11,20 +11,37 @@
   @font-face {
     font-family: "Lora"; 
     src: url("Lora-Regular.ttf");}
-  @font-face {
-    font-family: "Script"; 
-    src: url("Tangerine-Regular.ttf");}
+
+/* resource tracker */
+  table {margin: 0;}
+  #clearTracker {display: none; margin-top: 2px;}
+  #container, #clearTracker {margin-bottom: 50px;}
+  #container {display: block; /*width: 600px;*/}
+  #resource-list {display: none;}
+  #resource-list button {display: block;}
+  #resource-list td:nth-child(2) {width: 214px; padding-left: 4px; border-radius: 4px;}
+  #resource-list button {width: 336px;}
+  #resource-list button,input {margin-top: 2px;}
+  #resource-list input {width: 80px; border-radius: 4px;}
+  input[type="number"] {text-align: right;}
+  #resource-list input[type="checkbox"] {margin: 0; width: 20px;}
+  tr:nth-child(even) td:nth-child(2) {background: #f4f4f4;}
+  tr:nth-child(odd)  td:nth-child(2) {background: #ffffff;}
+
+/* todo */
   img {padding: 5px;}
   h1 {
+    display: inline-block;
+    border: 1px solid #ffc34d;
+    border-radius: 20px;
+    padding: 0 20px;
+    cursor: pointer;
     font-family: cursive;
     color: #ffc34d; 
     margin-left: 75px;
     font-size: 64px;
     letter-spacing: 1px;
     margin: 16px 0 16px 75px;
-    /*
-    text-shadow: 2px 2px white;}
-    */
     text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;} 
   div, span {
     display: inline-block; 
@@ -40,9 +57,9 @@
     margin: 10px 5px 0 0;
     border: #bcbcbc solid 1px;
     border-radius: 5px;}
-  div button {
+  #offsetList button {
     margin: 0px 5px 0 0;}
-  .l {width: 65px;}
+  .l {width: 65px; margin-top: 5px;}
   span, input {margin-right: 5px;}
   .date, .city {
     font-family: sans-serif;
@@ -52,18 +69,17 @@
   input {
     padding-left: 5px; 
     border: #bcbcbc solid 1px;}
-  .item, #offsetList {background-color: transparent; padding:0;}
+  .item, #offsetList, #container, #resource-list {
+    background-color: transparent; 
+    padding:0;}
   .item { margin-top: 10px;}
   #offsetList { margin-top: 0;}
   span {background-color: white;}
   html, body {
     height: 100%;
   }
-  #container {
-    display: block;
-    width: 600px;
-    height: 100%;}
   body {
+    background-color: gray;
     background-image: url("cartoon_path.jpg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -74,15 +90,15 @@
   #clear {
     padding: 0 40px; 
     background-color: #ffcce6;}
-  /*
-  .remove {color: #9f6060; font-weight: bold; font-family: "Script";}
-  https://www.w3schools.com/colors/colors_picker.asp */
+  #deposits {margin: 0 0 5px 0 ; padding: 0 5px; font-size: 12px;}
+  #msg {display: none;}
+  /* https://www.w3schools.com/colors/colors_picker.asp */
 </style>
 </head>
 <body>
-  <!--img src="Forge_of_Empires_Logo.webp"-->
   <h1>FoE todo</h1>
-  <!--div id=container-->
+  <div id=container>
+  <div id=deposits></div><br>
   <div class=l>City:</div>&nbsp;
   <input type="radio" name="city" value="1" checked><div>1</div>&nbsp;
   <input type="radio" name="city" value="2"><div>2</div>&nbsp;
@@ -101,12 +117,13 @@
   <button onclick="addPresetNote('Scout')">S</button>
   <button onclick="addPresetNote('Negotiate')">N</button>
   <button onclick="addPresetNote('Goods')">G</button>
-  <button onclick="addPresetNote('Event')">E</button>
-  <!--button onclick="addPresetNote('Battle')">B</button--><br>
+  <button onclick="addPresetNote('Event')">E</button><br>
   <div id="offsetList"></div></div>
-
+  <div id="resource-list"></div>
+  <button id=clearTracker>×</button>
+  <div id="msg"></div><p style="color:white;">.</p>
   <script>
-     // onfocus="this.select();"
+    // onfocus="this.select();"
     function addPresetTime(time){
       document.getElementById("timeInput").value = time;
     }
@@ -132,6 +149,7 @@
         console.log("Done.")
       }
     }
+
     function addTimeOffset() {
       const timeInput = document.getElementById("timeInput");
       const noteInput = document.getElementById("noteInput");
@@ -204,7 +222,6 @@
         noteItem.textContent = `${offset.note}`;
         listItem.appendChild(noteItem);
 
-
         offsetListElement.appendChild(listItem);
         offsetListElement.appendChild(document.createElement("br"));
       }
@@ -213,6 +230,155 @@
     // Initial update of the offset list on page load
     const initialOffsetList = JSON.parse(localStorage.getItem("offsets")) || [];
     updateOffsetList(initialOffsetList);
+
+    const resources = [
+      ["Bronze Age", ["Dye", "Lumber", "Marble", "Stone", "Wine"]],
+      ["Iron Age", ["Cloth", "Ebony", "Iron", "Jewelry", "Limestone"]],
+      ["Early Middle Ages", ["Alabaster", "Copper", "Gold", "Granite", "Honey"]],
+      ["High Middle Ages", ["Brick", "Dried Herbs", "Glass", "Rope", "Salt"]],
+      ["Late Middle Ages", ["Basalt", "Brass", "Gunpowder", "Silk", "Talc Powder"]],
+      ["Colonial Age", ["Coffee", "Paper", "Porcelain", "Tar", "Wire"]],
+      ["Industrial Age", ["Coke", "Fertilizer", "Rubber", "Textiles", "Whale Oil"]],
+      ["Progressive Era", ["Asbestos", "Explosives", "Gasoline", "Machine Parts", "Tinplate"]],
+      ["Modern Era", ["Convenience Food", "Ferroconcrete", "Flavorants", "Luxury Materials", "Packaging"]],
+      ["Postmodern Era", ["Genome Data", "Industrial Filters", "Renewable Resources", "Semiconductors", "Steel"]],
+      ["Contemporary Era", ["Bionics Data", "Electromagnets", "Gas", "Plastics", "Robots"]],
+      ["Tomorrow Era", ["Nutrition Research", "Papercrete", "Preservatives", "Smart Materials", "Translucent Concrete"]],
+      ["Future Era", ["Algae", "Biogeochemical Data", "Nanoparticles", "Purified Water", "Superconductors"]],
+      ["Arctic Future", ["A.I. Data", "Bioplastics", "Nanowire", "Paper Batteries", "Transester Gas"]],
+      ["Oceanic Future", ["Artificial Scales", "Biolight", "Corals", "Pearls", "Plankton"]],
+      ["Virtual Future", ["Cryptocash", "Data Crystals", "Golden Rice", "Nanites", "Tea Silk"]],
+      ["Space Age Mars", ["BioTech Crops", "Fusion Reactors", "Lubricant", "Mars Microbes", "Superalloys"]],
+      ["Space Age Asteroid Belt", ["Bromine", "Compound Fluids", "Nickel", "Platinum Crystals", "Processed Materials"]],
+      ["Space Age Venus", ["Glowing Seaweed", "Herbal Snack", "Microgreen Supplement", "Soy Proteins", "Sugar Crystals"]],
+      ["Space Age Jupiter Moon", ["Advanced DNA Data", "Bio Creatures", "Enhanced Porifera", "Red Algae", "Topological Records"]]
+    ];
+    const resourceList = document.getElementById('resource-list');
+    const offsetList   = document.getElementById("container");
+
+    const clearTracker = document.getElementById('clearTracker');
+    clearTracker.addEventListener('click', () => {
+      const response = confirm("This will clear all Goods for this city. \nAre you sure you want to do that?");
+      if(response){
+        const cityInput = document.querySelector('input[name="city"]:checked');
+        for (let i = 0; i < localStorage.length; i++) {
+          let key = localStorage.key(i);
+          let matcher = new RegExp(`foe${cityInput.value}_`);
+          if( matcher.test(key) ){
+            console.log(key);
+            localStorage.removeItem(key);
+          }
+        }
+        resourceList.innerHTML = '';
+        resetTracker();
+      }
+    });
+
+    function deposits(){
+      const cityInput = document.querySelector('input[name="city"]:checked');
+      const pattern = new RegExp(`foe${cityInput.value}_(.+)_deposit`);
+      let goods = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        let result = key.match(pattern);
+        if( result ){
+          // console.log(result[1]);
+          goods.push(result[1]);
+        }
+      }
+      document.getElementById("deposits").innerHTML = 
+        goods.length ? goods.join(', ') : '&nbsp;';
+      // if(goods.length){
+      //   document.getElementById("deposits").innerHTML = goods.join(', ');
+      // }else{
+      //   document.getElementById("deposits").innerHTML = '&nbsp;';
+      // }
+    }
+    deposits();
+
+    let radio = document.querySelectorAll('input[type=radio]');
+    for (let i = 0; i < radio.length; i++) {
+      radio[i].addEventListener('click', deposits);
+    }
+
+    document.querySelector('h1')
+      .addEventListener('click', () => {
+        const cssObj = window.getComputedStyle(resourceList, null);
+        if (cssObj.getPropertyValue('display') == "none") {
+          clearTracker.style.display = "block";
+          resourceList.style.display = "block";
+          offsetList.style.display = "none";
+          resourceList.innerHTML = '';
+          resetTracker();
+        } else {
+          clearTracker.style.display = "none";
+          resourceList.style.display = "none";
+          offsetList.style.display = "block";
+          deposits();
+        }
+      });
+
+    function resetTracker(){
+      const cityInput = document.querySelector('input[name="city"]:checked');
+      console.log(cityInput.value);
+      resources.forEach(([era, goods]) => {
+        const eraButton = document.createElement('button');
+        eraButton.textContent = era;
+        resourceList.appendChild(eraButton);
+
+        const goodsContainer = document.createElement('table');
+        goodsContainer.className = 'goods';
+        goodsContainer.style.display = 'none';
+        resourceList.appendChild(goodsContainer);
+
+        goods.forEach(good => {
+          const localStorageKey = 'foe' + cityInput.value + '_' + good; // Add 'foe_' prefix
+          const tr = document.createElement('tr');
+
+          // resource deposit checkbox
+          let td = document.createElement('td');
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = localStorage.getItem(localStorageKey + '_deposit') == 'true' ? true : false;
+          checkbox.addEventListener('change', function() {
+            if (this.checked) {
+              localStorage.setItem(localStorageKey + '_deposit', 'true');
+            } else {
+              localStorage.removeItem(localStorageKey + '_deposit');
+            }
+          });
+          td.appendChild(checkbox);
+          tr.appendChild(td);
+
+          // resource name
+          td = document.createElement('td');
+          td.textContent = good; // + ': ';
+          tr.appendChild(td);
+
+          // inventory amount
+          td = document.createElement('td');
+          const input = document.createElement('input');
+          input.type = 'number';
+          input.min = '0';
+          input.value = localStorage.getItem(localStorageKey) || '';
+          td.appendChild(input);
+          tr.appendChild(td);
+          goodsContainer.appendChild(tr);
+
+          input.addEventListener('input', () => {
+            localStorage.setItem(localStorageKey, input.value);
+          });
+        });
+
+        eraButton.addEventListener('click', () => {
+          goodsContainer.style.display = goodsContainer.style.display === 'none' ? 'block' : 'none';
+        });
+      });
+    }
+    resetTracker();
+
+    document.getElementById('msg').innerHTML = document.getElementById('resource-list').offsetWidth;
+
 
   </script>
 </body>
