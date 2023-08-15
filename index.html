@@ -12,13 +12,11 @@
     font-family: "Lora"; 
     src: url("Lora-Regular.ttf");}
 
-/*  .era {background-color: #e6e600; display: block;}*/
+  .era {display: block;}
   .province {background-color:  #cceeff;}
   .sector {background-color:  #ffe6f3;} /* red */
   .conquer {background-color:  #ddff99;} /* must be after .sector! */
-/*  .sectors {display: block;}*/
   .negotiate {text-align: right; padding: 0 5px 0 0;}
-/*  .province-list button {padding: 0 5px; margin-right: 5px;}*/
 
 /* resource tracker */
   .resource-list, .province-list {margin-top: 20px;}
@@ -41,11 +39,15 @@
   .negotiate {background: #ffffff; width: 60px; border-radius: 4px;}
 
 /* todo */
+/*    
+  .sectors {display: block;}
+  .province-list button {padding: 0 5px; margin-right: 5px;}
   img {padding: 5px;}
-  h1 {
-    display: inline-block;
     border: 1px solid #ffc34d;
     border-radius: 20px;
+*/    
+  h1 {
+    display: inline-block;
     padding: 0 20px;
     cursor: pointer;
     font-family: cursive;
@@ -60,7 +62,7 @@
     border-radius: 5px; 
     margin-top: 2px; 
     padding: 0 5px;}
-  *:not(h1) {
+  * {
     font-family: "Lora"; 
     font-size: 22px;}
   button {
@@ -103,7 +105,7 @@
     background-color: #ffcce6;}
   #deposits {margin: 0 0 5px 0 ; padding: 0 5px; font-size: 16px;}
   #msg {display: none;}
-  .tabs {padding: 0 15px;}
+  .tabs {padding: 0 15px; margin: 10px 5px 0 0;}
   /* https://www.w3schools.com/colors/colors_picker.asp */
 </style>
 </head>
@@ -121,7 +123,8 @@
   <input type="radio" name="city" value="3"><div>3</div>&nbsp;
   <input type="radio" name="city" value="4"><div>4</div><br>
   <div class=l>Time:</div>
-  <input type="text" id="timeInput" size="9" placeholder="2:12:30"><!-- inputmode="numeric" pattern="[0-9]*"-->
+  <input type="text" id="timeInput" size="9" placeholder="2:12:30">
+  <!-- inputmode="numeric" pattern="[0-9]*"-->
   <button onclick="clearTimeOffset()" id="clear">×</button><br>
   <button onclick="addPresetTime('0:01:00')">1h</button>
   <button onclick="addPresetTime('0:04:00')">4h</button>
@@ -169,7 +172,6 @@
       if(confirm('Clear all?')){
         localStorage.removeItem("offsets");
         updateOffsetList([]);
-        // console.log("Done.")
       }
     }
 
@@ -187,13 +189,8 @@
 
       let offsetList = JSON.parse(localStorage.getItem("offsets")) || [];
       offsetList.push(offsetObject);
-
-      // Sort the list in descending order by timestamp
-      offsetList.sort((a, b) => a.timestamp - b.timestamp); // ((a, b) => b.timestamp - a.timestamp);
-
-      // Save the updated list to localStorage
+      offsetList.sort((a, b) => a.timestamp - b.timestamp);
       localStorage.setItem("offsets", JSON.stringify(offsetList));
-
       updateOffsetList(offsetList);
       timeInput.value = noteInput.value = '';
     }
@@ -338,28 +335,6 @@
       }
     }
 
-    document.querySelector('h1')
-      .addEventListener('click', () => {
-      const cityInput = document.querySelector('input[name="city"]:checked');
-      const resourceList = document.getElementById(`rl${cityInput.value}`);
-      const provinceList = document.getElementById(`pl${cityInput.value}`);
-        const css_rl = window.getComputedStyle(resourceList, null);
-        const css_pl = window.getComputedStyle(provinceList, null);
-        if (css_rl.getPropertyValue('display') == "block") {
-          clearTracker.style.display = "none";
-          resourceList.style.display = "none";
-          provinceList.style.display = "block";
-        } else if(css_pl.getPropertyValue('display') == "block"){
-          provinceList.style.display = "none";
-          offsetList.style.display = "block";
-          deposits();
-        }else{
-          clearTracker.style.display = "block";
-          resourceList.style.display = "block";
-          offsetList.style.display = "none";
-        }
-      });
-
     function resetTracker(i){
       const resourceList = document.getElementById(`rl${i}`);
       resourceList.replaceChildren();
@@ -469,9 +444,14 @@
             const sectorButton = document.createElement('button');
             sectorButton.textContent = goods.join(' ');
             sectorButton.className = 'sector';
+            const key = `foe${i}_${province[0]}_${sector}`; // closure !
+            if (!(localStorage.getItem(key) === null)) {
+              sectorButton.className += ' conquer';
+            }
             sectorButton.onclick = function () {
               sectorButton.classList.toggle('conquer');
               let sign = sectorButton.classList.contains('conquer') ? -1 : 1;
+              sign < 0 ? localStorage.setItem(key, 'true') : localStorage.removeItem(key);
               let goods = sectorButton.textContent.split(/(\d+)/).map(n => n.trim());
               for(let j = 0; j+2 < goods.length; j+=2){
                 let nego = resource_index[goods[j]][i];
