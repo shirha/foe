@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <!--link rel="manifest" href="manifest.json"-->
+  <link rel="shortcut icon" type="image/png" href="favicon-512.png">
+  <title>FOE todo</title>
+<style>
+  @font-face {
+    font-family: "Lora"; 
+    src: url("Lora-Regular.ttf");}
+
+/* resource tracker */
+  table {margin: 0;}
+  #clearTracker {display: none; margin-top: 2px;}
+  #container, #clearTracker {margin-bottom: 50px;}
+  #container {display: block; /*width: 600px;*/}
+  #resource-list {display: none;}
+  #resource-list button {display: block;}
+  #resource-list td:nth-child(2) {width: 214px; padding-left: 4px; border-radius: 4px;}
+  #resource-list button {width: 336px;}
+  #resource-list button,input {margin-top: 2px;}
+  #resource-list input {width: 80px; border-radius: 4px;}
+  input[type="number"] {text-align: right;}
+  #resource-list input[type="checkbox"] {margin: 0; width: 20px;}
+  tr:nth-child(even) td:nth-child(2) {background: #f4f4f4;}
+  tr:nth-child(odd)  td:nth-child(2) {background: #ffffff;}
+
+/* todo */
+  img {padding: 5px;}
+  h1 {
+    display: inline-block;
+    border: 1px solid #ffc34d;
+    border-radius: 20px;
+    padding: 0 20px;
+    cursor: pointer;
+    font-family: cursive;
+    color: #ffc34d; 
+    margin-left: 75px;
+    font-size: 64px;
+    letter-spacing: 1px;
+    margin: 16px 0 16px 75px;
+    text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;} 
+  div, span {
+    display: inline-block; 
+    background-color: white; 
+    border-radius: 5px; 
+    margin-top: 2px; 
+    padding: 0 5px;}
+  *:not(h1) {
+    font-family: "Lora"; 
+    font-size: 22px;}
+  button {
+    padding: 0 20px;
+    margin: 10px 5px 0 0;
+    border: #bcbcbc solid 1px;
+    border-radius: 5px;}
+  #offsetList button {
+    margin: 0px 5px 0 0;}
+  .l {width: 65px; margin-top: 5px;}
+  span, input {margin-right: 5px;}
+  .date, .city {
+    font-family: sans-serif;
+    font-stretch: ultra-condensed;}
+  .date {color: #01579B;}
+  .city {color: #9f6060;}
+  input {
+    padding-left: 5px; 
+    border: #bcbcbc solid 1px;}
+  .item, #offsetList, #container, #resource-list {
+    background-color: transparent; 
+    padding:0;}
+  .item { margin-top: 10px;}
+  #offsetList { margin-top: 0;}
+  span {background-color: white;}
+  html, body {
+    height: 100%;
+  }
+  body {
+    background-color: gray;
+    background-image: url("cartoon_path.jpg");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;}
+  #plus {
+    padding: 0 40px; 
+    background-color: #ace600;}
+  #clear {
+    padding: 0 40px; 
+    background-color: #ffcce6;}
+  #deposits {margin: 0 0 5px 0 ; padding: 0 5px; font-size: 16px;}
+  #msg {display: none;}
+  /* https://www.w3schools.com/colors/colors_picker.asp */
+</style>
+</head>
+<body>
+  <h1>FoE todo</h1>
+  <div id=container>
+  <div id=deposits></div><br>
+  <div class=l>City:</div>&nbsp;
+  <input type="radio" name="city" value="1" checked><div>1</div>&nbsp;
+  <input type="radio" name="city" value="2"><div>2</div>&nbsp;
+  <input type="radio" name="city" value="3"><div>3</div>&nbsp;
+  <input type="radio" name="city" value="4"><div>4</div><br>
+  <div class=l>Time:</div>
+  <input type="text" id="timeInput" size="9" placeholder="2:12:30"><!-- inputmode="numeric" pattern="[0-9]*"-->
+  <button onclick="clearTimeOffset()" id="clear">×</button><br>
+  <button onclick="addPresetTime('0:01:00')">1h</button>
+  <button onclick="addPresetTime('0:04:00')">4h</button>
+  <button onclick="addPresetTime('0:08:00')">8h</button>
+  <button onclick="addPresetTime('1:00:00')">1d</button><br>
+  <div class=l>Note:</div>
+  <input type="text" id="noteInput" size="9" placeholder="Enter note">
+  <button onclick="addTimeOffset()" id="plus">+</button><br>
+  <button onclick="addPresetNote('Scout')">S</button>
+  <button onclick="addPresetNote('Negotiate')">N</button>
+  <button onclick="addPresetNote('Goods')">G</button>
+  <button onclick="addPresetNote('Event')">E</button><br>
+  <div id="offsetList"></div></div>
+  <div id="resource-list"></div>
+  <button id=clearTracker>×</button>
+  <div id="msg"></div><p style="color:white;">.</p>
+  <script>
+    // onfocus="this.select();"
+    function addPresetTime(time){
+      document.getElementById("timeInput").value = time;
+    }
+
+    function addPresetNote(note){
+      document.getElementById("noteInput").value = note;
+    }
+
+    function parseTimeString(timeString) {
+      let totalMinutes = 0, 
+        timeSlots = timeString.split(':').reverse() || [0];
+
+      for (let i = 0; i < timeSlots.length; i++) {
+        totalMinutes += timeSlots[i] * [60, 60*60, 60*60*24][i];
+      }
+      return Date.now() + totalMinutes * 1000;
+    }
+
+    function clearTimeOffset() {
+      if(confirm('Clear all?')){
+        localStorage.removeItem("offsets");
+        updateOffsetList([]);
+        console.log("Done.")
+      }
+    }
+
+    function addTimeOffset() {
+      const timeInput = document.getElementById("timeInput");
+      const noteInput = document.getElementById("noteInput");
+      const cityInput = document.querySelector('input[name="city"]:checked');
+      const epochTime = parseTimeString(timeInput.value);
+
+      const offsetObject = {
+        timestamp: epochTime,
+        note: noteInput.value,
+        city: cityInput.value
+      };
+
+      let offsetList = JSON.parse(localStorage.getItem("offsets")) || [];
+      offsetList.push(offsetObject);
+
+      // Sort the list in descending order by timestamp
+      offsetList.sort((a, b) => a.timestamp - b.timestamp); // ((a, b) => b.timestamp - a.timestamp);
+
+      // Save the updated list to localStorage
+      localStorage.setItem("offsets", JSON.stringify(offsetList));
+
+      updateOffsetList(offsetList);
+      timeInput.value = noteInput.value = '';
+    }
+
+    function removeOffset(index) {
+      let offsetList = JSON.parse(localStorage.getItem("offsets")) || [];
+      offsetList.splice(index, 1);
+      localStorage.setItem("offsets", JSON.stringify(offsetList));
+      updateOffsetList(offsetList);
+    }
+
+    function updateOffsetList(offsetList) {
+      const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+      const offsetListElement = document.getElementById("offsetList");
+      offsetListElement.innerHTML = "";
+
+      for (let i = 0; i < offsetList.length; i++) {
+        const offset = offsetList[i];
+        const timestamp = (new Date(offset.timestamp - tzoffset)).toISOString();
+        // console.log(timestamp);
+
+        const listItem = document.createElement("div");
+        listItem.className = "item";
+
+        // Create a remove button for each item
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "×";
+        removeButton.className = "remove";
+        removeButton.onclick = function () {
+          removeOffset(i);
+        };
+        // removeButton.onclick = i => removeOffset(i);
+        listItem.appendChild(removeButton);
+
+        // Create a city string for each item
+        const cityItem = document.createElement("span");
+        cityItem.textContent = `${offset.city}`;
+        cityItem.className = "city";
+        listItem.appendChild(cityItem);
+
+        // Create a date string for each item
+        const dateItem = document.createElement("span");
+        dateItem.textContent = `${timestamp.substr(5,5)} ${timestamp.substr(11,5)}`;
+        dateItem.className = "date";
+        listItem.appendChild(dateItem);
+
+        // Create a note string for each item
+        const noteItem = document.createElement("span");
+        noteItem.textContent = `${offset.note}`;
+        listItem.appendChild(noteItem);
+
+        offsetListElement.appendChild(listItem);
+        offsetListElement.appendChild(document.createElement("br"));
+      }
+    }
+
+    // Initial update of the offset list on page load
+    const initialOffsetList = JSON.parse(localStorage.getItem("offsets")) || [];
+    updateOffsetList(initialOffsetList);
+
+    const resources = [
+      ["Bronze Age", ["Dye", "Lumber", "Marble", "Stone", "Wine"]],
+      ["Iron Age", ["Cloth", "Ebony", "Iron", "Jewelry", "Limestone"]],
+      ["Early Middle Ages", ["Alabaster", "Copper", "Gold", "Granite", "Honey"]],
+      ["High Middle Ages", ["Brick", "Dried Herbs", "Glass", "Rope", "Salt"]],
+      ["Late Middle Ages", ["Basalt", "Brass", "Gunpowder", "Silk", "Talc Powder"]],
+      ["Colonial Age", ["Coffee", "Paper", "Porcelain", "Tar", "Wire"]],
+      ["Industrial Age", ["Coke", "Fertilizer", "Rubber", "Textiles", "Whale Oil"]],
+      ["Progressive Era", ["Asbestos", "Explosives", "Gasoline", "Machine Parts", "Tinplate"]],
+      ["Modern Era", ["Convenience Food", "Ferroconcrete", "Flavorants", "Luxury Materials", "Packaging"]],
+      ["Postmodern Era", ["Genome Data", "Industrial Filters", "Renewable Resources", "Semiconductors", "Steel"]],
+      ["Contemporary Era", ["Bionics Data", "Electromagnets", "Gas", "Plastics", "Robots"]],
+      ["Tomorrow Era", ["Nutrition Research", "Papercrete", "Preservatives", "Smart Materials", "Translucent Concrete"]],
+      ["Future Era", ["Algae", "Biogeochemical Data", "Nanoparticles", "Purified Water", "Superconductors"]],
+      ["Arctic Future", ["A.I. Data", "Bioplastics", "Nanowire", "Paper Batteries", "Transester Gas"]],
+      ["Oceanic Future", ["Artificial Scales", "Biolight", "Corals", "Pearls", "Plankton"]],
+      ["Virtual Future", ["Cryptocash", "Data Crystals", "Golden Rice", "Nanites", "Tea Silk"]],
+      ["Space Age Mars", ["BioTech Crops", "Fusion Reactors", "Lubricant", "Mars Microbes", "Superalloys"]],
+      ["Space Age Asteroid Belt", ["Bromine", "Compound Fluids", "Nickel", "Platinum Crystals", "Processed Materials"]],
+      ["Space Age Venus", ["Glowing Seaweed", "Herbal Snack", "Microgreen Supplement", "Soy Proteins", "Sugar Crystals"]],
+      ["Space Age Jupiter Moon", ["Advanced DNA Data", "Bio Creatures", "Enhanced Porifera", "Red Algae", "Topological Records"]]
+    ];
+    const resource_index = {};
+    const resourceList = document.getElementById('resource-list');
+    const offsetList   = document.getElementById("container");
+
+    const clearTracker = document.getElementById('clearTracker');
+    clearTracker.addEventListener('click', () => {
+      const response = confirm("This will clear all Goods for this city. \nAre you sure you want to do that?");
+      if(response){
+        const cityInput = document.querySelector('input[name="city"]:checked');
+        for (let i = 0; i < localStorage.length; i++) {
+          let key = localStorage.key(i);
+          let matcher = new RegExp(`foe${cityInput.value}_`);
+          if( matcher.test(key) ){
+            console.log(key);
+            localStorage.removeItem(key);
+          }
+        }
+        resourceList.innerHTML = '';
+        resetTracker();
+      }
+    });
+
+    function deposits(){
+      const cityInput = document.querySelector('input[name="city"]:checked');
+      const pattern = new RegExp(`foe${cityInput.value}_(.+)_deposit`);
+      let goods = [];
+      Object.keys(localStorage).forEach(function(key){
+        let result = key.match(pattern);
+        if( result ){
+          goods.push(result[1]);
+        }
+      });
+      document.getElementById("deposits").innerHTML = 
+        goods.length ? goods.sort((p1,p2) => resource_index[p1]-resource_index[p2]).join(', ') : '&nbsp;';
+    }
+
+    let radio = document.querySelectorAll('input[type=radio]');
+    for (let i = 0; i < radio.length; i++) {
+      radio[i].addEventListener('click', deposits);
+    }
+
+    document.querySelector('h1')
+      .addEventListener('click', () => {
+        const cssObj = window.getComputedStyle(resourceList, null);
+        if (cssObj.getPropertyValue('display') == "none") {
+          clearTracker.style.display = "block";
+          resourceList.style.display = "block";
+          offsetList.style.display = "none";
+          resourceList.innerHTML = '';
+          resetTracker();
+        } else {
+          clearTracker.style.display = "none";
+          resourceList.style.display = "none";
+          offsetList.style.display = "block";
+          deposits();
+        }
+      });
+
+    function resetTracker(){
+      const cityInput = document.querySelector('input[name="city"]:checked');
+      console.log(cityInput.value);
+      resources.forEach(([era, goods],era_index) => {
+        const eraButton = document.createElement('button');
+        eraButton.textContent = era;
+        resourceList.appendChild(eraButton);
+
+        const goodsContainer = document.createElement('table');
+        goodsContainer.className = 'goods';
+        goodsContainer.style.display = 'none';
+        resourceList.appendChild(goodsContainer);
+
+        goods.forEach((good,good_index) => {
+          if(resource_init){
+            resource_index[good] = 10*era_index+good_index;
+          }
+          const localStorageKey = 'foe' + cityInput.value + '_' + good; // Add 'foe_' prefix
+          const tr = document.createElement('tr');
+
+          // resource deposit checkbox
+          let td = document.createElement('td');
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = localStorage.getItem(localStorageKey + '_deposit') == 'true' ? true : false;
+          checkbox.addEventListener('change', function() {
+            if (this.checked) {
+              localStorage.setItem(localStorageKey + '_deposit', 'true');
+            } else {
+              localStorage.removeItem(localStorageKey + '_deposit');
+            }
+          });
+          td.appendChild(checkbox);
+          tr.appendChild(td);
+
+          // resource name
+          td = document.createElement('td');
+          td.textContent = good; // + ': ';
+          tr.appendChild(td);
+
+          // inventory amount
+          td = document.createElement('td');
+          const input = document.createElement('input');
+          input.type = 'number';
+          input.min = '0';
+          input.value = localStorage.getItem(localStorageKey) || '';
+          td.appendChild(input);
+          tr.appendChild(td);
+          goodsContainer.appendChild(tr);
+
+          input.addEventListener('input', () => {
+            localStorage.setItem(localStorageKey, input.value);
+          });
+        });
+
+        eraButton.addEventListener('click', () => {
+          goodsContainer.style.display = goodsContainer.style.display === 'none' ? 'block' : 'none';
+        });
+      });
+    }
+    let resource_init = true;
+    resetTracker();
+    resource_init = false;
+    deposits();
+
+    document.getElementById('msg').innerHTML = document.getElementById('resource-list').offsetWidth;
+
+
+  </script>
+</body>
+</html>
+
