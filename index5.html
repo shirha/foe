@@ -12,113 +12,141 @@
     font-family: "Lora"; 
     src: url("Lora-Regular.ttf");}
 
-  body::-webkit-scrollbar {display: none;}
-  body {
-    overflow-y: scroll;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-color: #D3D3D3;
-    background-image: url("wallpaperflare.com_wallpaper.jpg");
-    background-position: right;
-  }
+  #todo {background-color: #ffe6b3;} /* gold */
+  .era {display: block;}
+  .province, .branch {background-color: #cceeff;}
+  .sector, .tech {background-color: #ffe6f3;} /* red */
+/*  .goods {margin-top: 10px;}*/
+  .conquer {background-color: #ddff99;} /* must be after .sector! */
+  .negotiate {text-align: right; padding: 0 5px 0 0;}
+  .tl span {
+    border: 1px solid #bcbcbc;
+    border-radius: 4px;
+    display: inline; 
+    padding: 0 5px;}
+/*    background-color: #cceeff; */
+
+/* resource tracker */
+  .rl, .pl, .tl {margin-top: 20px;}
+  table {margin: 0;}
+  #clearTracker {display: none; margin-top: 2px;}
+  #container, #clearTracker {margin-bottom: 50px;}
+  #container {display: block; /*width: 600px;*/}
+  .rl, .pl, .tl {display: none;}
+  .rl button {display: block;}
+  .rl td:nth-child(2) {width: 214px; padding-left: 4px; border-radius: 4px;}
+  .rl button, button.era {width: 336px;}
+  .rl button,
+  .pl button,
+  .tl button,
+  input {margin-top: 2px;}
+  .rl input {width: 80px; border-radius: 4px;}
+  input[type="number"] {text-align: right;}
+  .rl input[type="checkbox"] {margin: 0; width: 20px;}
+  tr:nth-child(even) td:nth-child(2) {background: #f4f4f4;}
+  tr:nth-child(odd)  td:nth-child(2) {background: #ffffff;}
+  .negotiate {background: #ffffff; width: 60px; border-radius: 4px;}
+
+/* todo */
+/*    
+  .sectors {display: block;}
+  .pl button {padding: 0 5px; margin-right: 5px;}
+  img {padding: 5px;}
+    border: 1px solid #ffc34d;
+    border-radius: 20px;
+*/    
   h1 {
+    display: inline-block;
+    padding: 0 20px;
     cursor: pointer;
     font-family: cursive;
     color: #ffc34d; 
     font-size: 36px;
-    margin: 16px 0 4px 84px;
+    letter-spacing: 1px;
+    margin: 16px 0 4px 75px;
     text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;} 
-
-  * {
-    background-color: transparent; 
-    padding:0;
-    border-radius: 4px;
-    font-family: "Lora"; 
-    font-size: 22px;}
-
-  table {margin: 0;}
-  tr:nth-child(even) td:nth-child(2) {background: #f4f4f4;}
-  tr:nth-child(odd)  td:nth-child(2) {background: #ffffff;}
-
-  .b     {margin-top: 10px;}
-  .label {margin-top: 10px; width: 65px;}
-  span, input, .label, #deposits, .w, .goods td:nth-child(1) {background-color: white;}
-  span, input {margin-right: 4px;}
-  input {padding-left: 4px; border: #bcbcbc solid 1px;}
-  input[type="checkbox"] {margin: 0; width: 20px;}
-  input[type="number"] {width: 80px; text-align: right; margin: 0; padding: 0 5px 0 0;}
-  .negotiate {
-    text-align: right; padding: 0 5px 0 0;
-    background: #ffffff; width: 60px;}
-  .era {display: block; width: 336px;}
-  .province, .branch {background-color: #cceeff;} /* blue */
-  .sector, .tech {background-color: #ffe6f3;} /* red */
-  .sectors, .techs {margin: 0; padding: 0;}
-  .conquer {background-color: #ddff99;} /* must come after .sector! */
-  .rl, .pl, .tl {margin-top: 20px; display: none;}
-  .rl td:nth-child(2) {width: 214px; padding-left: 4px;}
-  #todo {background-color: #ffe6b3;} /* lite gold */
-  button {
-    background-color: #efefef;
-    padding: 0 10px;
-    margin: 2px 4px 0 0;
-    border: #bcbcbc solid 1px;}
   div, span {
     display: inline-block; 
+    background-color: white; 
+    border-radius: 5px; 
     margin-top: 2px; 
-    padding: 0 5px;
-  }
+    padding: 0 5px;}
+  * {
+    font-family: "Lora"; 
+    font-size: 22px;}
+  button {
+    padding: 0 20px;
+    margin: 10px 5px 0 0;
+    border: #bcbcbc solid 1px;
+    border-radius: 5px;}
+  #offsetList button {
+    margin: 0px 5px 0 0;}
+  .l {width: 65px; margin-top: 5px;}
+  span, input {margin-right: 5px;}
   .date, .city {
     font-family: sans-serif;
     font-stretch: ultra-condensed;}
   .date {color: #01579B;}
   .city {color: #9f6060;}
-
-   #ol, #container {padding: 0; margin: 0;}
-  .item { margin-top: 8px; padding: 0;}
+  input {
+    padding-left: 5px; 
+    border: #bcbcbc solid 1px;}
+  .item, #offsetList, #container, .rl, .pl, .tl, .sectors, .techs {
+    background-color: transparent; 
+    padding:0;}
+  .item { margin-top: 10px;}
+  #offsetList { margin-top: 0;}
+  span {background-color: white;}
+  html, body {
+    height: 100%;
+  }
+  body {
+    background-color: gray;
+    background-image: url("cartoon_path.jpg");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;}
   #plus {
     padding: 0 40px; 
     background-color: #ace600;}
   #clear {
     padding: 0 40px; 
     background-color: #ffcce6;}
-  #deposits, .d {margin: 0;}
-  #deposits {font-size: 16px;}
-  #msg, #clearTracker {display: none;}
-  #container, #clearTracker {margin-bottom: 50px;}
-  #container {display: block;}
+  #deposits {margin: 0 0 5px 0 ; padding: 0 5px; font-size: 16px;}
+  #msg {display: none;}
+  .tabs {padding: 0 15px; margin: 10px 5px 0 0;}
   /* https://www.w3schools.com/colors/colors_picker.asp */
 </style>
 </head>
 <body>
-  <h1>FoE todo</h1>
-  <button class="tabs" onclick="tabs(1,this)" id=todo>todo</button>
-  <button class="tabs" onclick="tabs(2,this)">goods</button>
-  <button class="tabs" onclick="tabs(3,this)">prov</button>
-  <button class="tabs" onclick="tabs(4,this)">tech</button><br>
-  <div class="label">City:</div>&nbsp;
-  <input type="radio" name="city" value="1" checked><div class="w">1</div>&nbsp;
-  <input type="radio" name="city" value="2"><div class="w">2</div>&nbsp;
-  <input type="radio" name="city" value="3"><div class="w">3</div>&nbsp;
-  <input type="radio" name="city" value="4"><div class="w">4</div><br>
-  <div id="container">
-  <div id="deposits">&nbsp;</div><br>
-  <div class="label d">Time:</div>
+  <h1>FoE todo</h1><br>
+  <button class=tabs onclick="tabs(1,this)" id=todo>todo</button>
+  <button class=tabs onclick="tabs(2,this)">goods</button>
+  <button class=tabs onclick="tabs(3,this)">prov</button>
+  <button class=tabs onclick="tabs(4,this)">tech</button><br>
+  <div class=l>City:</div>&nbsp;
+  <input type="radio" name="city" value="1" checked><div>1</div>&nbsp;
+  <input type="radio" name="city" value="2"><div>2</div>&nbsp;
+  <input type="radio" name="city" value="3"><div>3</div>&nbsp;
+  <input type="radio" name="city" value="4"><div>4</div><br>
+  <div id=container>
+  <div id=deposits>&nbsp;</div><br>
+  <div class=l>Time:</div>
   <input type="text" id="timeInput" size="9" placeholder="2:12:30">
   <!-- inputmode="numeric" pattern="[0-9]*"-->
   <button onclick="clearTimeOffset()" id="clear">×</button><br>
-  <button class="b" onclick="addPresetTime('0:01:00')">1h</button>
+  <button onclick="addPresetTime('0:01:00')">1h</button>
   <button onclick="addPresetTime('0:04:00')">4h</button>
   <button onclick="addPresetTime('0:08:00')">8h</button>
   <button onclick="addPresetTime('1:00:00')">1d</button><br>
-  <div class="label">Note:</div>
+  <div class=l>Note:</div>
   <input type="text" id="noteInput" size="9" placeholder="Enter note">
   <button onclick="addTimeOffset()" id="plus">+</button><br>
-  <button class="b" onclick="addPresetNote('Scout')">S</button>
+  <button onclick="addPresetNote('Scout')">S</button>
   <button onclick="addPresetNote('Negotiate')">N</button>
   <button onclick="addPresetNote('Goods')">G</button>
   <button onclick="addPresetNote('Event')">E</button><br>
-  <div id="ol"></div></div>
+  <div id="offsetList"></div></div>
   <div class="rl" id="rl1"></div>
   <div class="rl" id="rl2"></div>
   <div class="rl" id="rl3"></div>
@@ -131,7 +159,7 @@
   <div class="tl" id="tl2"></div>
   <div class="tl" id="tl3"></div>
   <div class="tl" id="tl4"></div>
-  <button id="clearTracker">×</button>
+  <button id=clearTracker>×</button>
   <div id="msg"></div><p style="color:white;">.</p>
   <script>
     const state = init();
@@ -191,7 +219,7 @@
 
     function updateOffsetList(offsetList) {
       const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-      const offsetListElement = document.getElementById("ol");
+      const offsetListElement = document.getElementById("offsetList");
       offsetListElement.innerHTML = "";
 
       for (let i = 0; i < offsetList.length; i++) {
@@ -269,6 +297,8 @@
         goods.length ? goods.sort((p1,p2) => resource_index[p1][0]-resource_index[p2][0]).join(', ') : '&nbsp;';
     }
 
+    // let state = 1;
+
     let radio = document.querySelectorAll('input[type=radio]');
     for (let i = 0; i < radio.length; i++) {
       radio[i].addEventListener('click', function (){
@@ -303,7 +333,6 @@
       state.resources.forEach(([era, goods],era_index) => {
         const eraButton = document.createElement('button');
         eraButton.textContent = era;
-        eraButton.className = 'era';
         resourceList.appendChild(eraButton);
 
         const goodsContainer = document.createElement('table');
