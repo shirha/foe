@@ -17,7 +17,7 @@
     overflow-y: scroll;
     background-attachment: fixed;
     background-repeat: no-repeat;
-    background-color: #D3D3D3;
+/*    background-color: #D3D3D3;*/
     background-image: url("wallpaperflare.com_wallpaper.jpg");
     background-position: right;
   }
@@ -132,9 +132,16 @@
   <div class="tl" id="tl3"></div>
   <div class="tl" id="tl4"></div>
   <button id="clearTracker">×</button>
-  <div id="msg"></div><p style="color:white;">.</p>
+  <div id="msg"></div><p style="color:#ffc34d;">.</p>
   <script>
     const state = init();
+    const resource_index = {};
+    const clearTracker = document.getElementById('clearTracker');
+    const offsetList   = document.getElementById("container");
+
+    // Initial update of the offset list on page load
+    const initialOffsetList = JSON.parse(localStorage.getItem("offsets")) || [];
+    updateOffsetList(initialOffsetList);
 
     // onfocus="this.select();"
     function addPresetTime(time){
@@ -234,26 +241,23 @@
       }
     }
 
-    // Initial update of the offset list on page load
-    const initialOffsetList = JSON.parse(localStorage.getItem("offsets")) || [];
-    updateOffsetList(initialOffsetList);
 
-    const resource_index = {};
-    const offsetList   = document.getElementById("container");
-    const clearTracker = document.getElementById('clearTracker');
     clearTracker.addEventListener('click', () => {
       const response = confirm("This will clear all Goods for this city. \nAre you sure you want to do that?");
       if(response){
-        const cityInput = document.querySelector('input[name="city"]:checked');
         for (let i = 0; i < localStorage.length; i++) {
           let key = localStorage.key(i);
-          let matcher = new RegExp(`foe${cityInput.value}_`);
+          let matcher = new RegExp(`foe${state.city}_`);
           if( matcher.test(key) ){
             console.log(key);
             localStorage.removeItem(key);
           }
         }
-        resetTracker(cityInput.value);
+        let divs = document.querySelectorAll('.sectors,.techs');
+        for (let i = 0; i < divs.length; i++) {
+          divs[i].style.display = "none";
+        }
+        resetTracker(state.city);
       }
     });
 
@@ -271,6 +275,7 @@
 
     let radio = document.querySelectorAll('input[type=radio]');
     for (let i = 0; i < radio.length; i++) {
+      state.element[i] = radio[i];
       radio[i].addEventListener('click', function (){
         state.city = radio[i].value;
         tabs(state.tab, state.element[state.tab])});
@@ -286,10 +291,11 @@
       let list = document.querySelectorAll('.rl, .pl, .tl, #container, #clearTracker');
       for (let i = 0; i < list.length; i++) list[i].style.display = "none";
       if(n == 1){
-        offsetList.style.display   = "block";
+        offsetList.style.display = "block";
         deposits();
       } else if(n == 2){
         document.getElementById(`rl${state.city}`).style.display = "block";
+        clearTracker.style.display = "block";
       } else if (n == 3) {
         document.getElementById(`pl${state.city}`).style.display = "block";
       } else if (n == 4) {
@@ -533,9 +539,9 @@
     function init (){
       return { city: 1, tab: 1, element: [], 
         resources: [
-          ["Bronze Age", ["Dye", "Lumber", "Marble", "Stone", "Wine"]],
-          ["Iron Age", ["Cloth", "Ebony", "Iron", "Jewelry", "Limestone"]],
-          ["Early Middle Ages", ["Alabaster", "Copper", "Gold", "Granite", "Honey"]],
+          ["Bronze Age", ["Marble", "Lumber", "Dye", "Stone", "Wine"]],
+          ["Iron Age", ["Cloth", "Ebony", "Jewelry", "Iron", "Limestone"]],
+          ["Early Middle Ages", ["Copper", "Gold", "Granite", "Honey", "Alabaster"]],
           ["High Middle Ages", ["Brick", "Dried Herbs", "Glass", "Rope", "Salt"]],
           ["Late Middle Ages", ["Basalt", "Brass", "Gunpowder", "Silk", "Talc Powder"]],
           ["Colonial Age", ["Coffee", "Paper", "Porcelain", "Tar", "Wire"]],
