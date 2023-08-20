@@ -422,6 +422,7 @@
           let provinceButton = document.createElement('button');
           provinceButton.textContent = province[0].replace(/_/g,' '); //.shift();
           provinceButton.className = 'province';
+          provinceButton.onclick = () => window.open(state.host + province[0]);
           eraDiv.appendChild(provinceButton);
 
           province.forEach( ([sector, wave, army, goods, loot], index) => {
@@ -594,6 +595,7 @@
       }
 
       return { city: 1, tab: 1, element: [], fp: [null,[0,0,0],[0,0,0],[0,0,0],[0,0,0]], // [FP,Coins,Supplies]
+        host: "https://forgeofempires.fandom.com/wiki/",
         resources: [
           ["Bronze Age", ["Marble", "Lumber", "Dye", "Stone", "Wine"]],
           ["Iron Age", ["Cloth", "Ebony", "Jewelry", "Iron", "Limestone"]],
