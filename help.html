@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>FOE Todo Help</title>
+<style>
+  @font-face {
+    font-family: "Lora"; 
+    src: url("Lora-Regular.ttf");}
+  body {font-family: "Lora";}
+  * {font-size: 22px;user-select: none;}
+  h1 {font-size: 2em;}
+  #content {font-weight: bold;}
+  a {text-decoration: none;}
+
+.post-container {
+    max-width: 800px;
+    margin: 20px 20px 0 0;  
+    overflow: auto
+}
+.post-thumb {
+    margin: 0 20px 20px 0;
+    float: left
+}
+.post-thumb img {
+    display: block
+}
+.clear {clear: both;}
+
+.post-thumb::-webkit-scrollbar {display: none;}
+.post-thumb {height:851px; width:393px; overflow:scroll;}
+</style>
+</head>
+<body>
+<div class="post-container">                
+<center><h1>"FoE todo" Help</h1></center>
+<h3 id="content">Contents</h3>
+<ul>
+  <li><a href="#todo">Todo log</a></li>
+  <li><a href="#goods">Goods</a></li>
+  <li><a href="#prov">Province</a></li>
+  <li><a href="#tech">Technology</a></li>
+</ul>
+
+<div class="post-thumb"><img src="i/screencapture-localhost-9000-2023-08-20-08_37_14.png"></div>
+  <div class="post-content">
+<h3 class="post-title" id="todo"><a href="#content">Todo</a></h3>
+<p>"FoE todo" has four tabs: "todo", "goods", "prov" and "tech".</p>
+<p>Below the tabs are radio buttons to select one of up to four Cities.</p>
+<p>Next is a list of discovered "deposits". These can be marked on the <a href="#goods">"goods"</a> tab.</p>
+<p>To create a "todo" log entry, first set the City.</p>
+<p>Time can be entered using the presets or manually as "mmm" or "d:mm:mm" e.g. 90 or 1:30. This offset will be added to the current time and logged as a future time.</p>
+<p>Then you enter a Note using the presets or manually.</p>
+<p>When all entries look correct then press the green "+" button to log your entry. The logged entry is City, Future Time and Note. You clear a single logged entry with the "x" delete button.</p>
+<p>The red "x" deletes all logged entries.</p>
+   </div>
+
+<div class="clear">&nbsp;</div>
+
+<div class="post-thumb"><img src="i/screencapture-localhost-9000-2023-08-20-08_35_35a.jpg"></div>
+  <div class="post-content">
+<h3 class="post-title" id="goods"><a href="#content">Goods</a></h3>
+<p>You can track inventory for 4 cities. You can mark the deposits per Era you discover. These will show on the <a href="#todo">"todo"</a> tab.</p>
+<p>To the right of the inventory count is the sum of the negotiation and technology "costs" for Era's who have been <b>expanded</b> on the <a href="#prov">"prov"</a> tab and the <a href="#tech">"tech"</a> tab.</p>
+<p>If a Technology for an Era has been <b>expanded</b>, then you will see the resource unlock "costs" in FP, Coins and Supplies.</p>
+<p>① Technology unlock "costs" in resources
+  <br>② Era button
+  <br>③ discovered "deposits"
+  <br>④ inventory count
+  <br>⑤ Provinces negotiation and Technology unlock "costs" in goods<p>
+</div>
+
+<div class="clear">&nbsp;</div>
+
+<div class="post-thumb"><img src="i/screencapture-localhost-9000-2023-08-20-08_35_56.png"></div>
+  <div class="post-content">
+<h3 class="post-title" id="prov"><a href="#content">Provinces</a></h3>
+<p>When you click on an Era button, it will <b>expand</b> to show the Provinces plus a "goods" button for each sector's negotiation "costs". </p>
+<p>This will cause <b>all</b> red goods "costs" to be added to the <a href="#goods">"goods"</a> tab.</p>
+<p>When you click a "goods" button it changes color from red to green meaning you either negotiated for that sector or won the battle for it.</p>
+<p>The green or "conquered" sector's goods will be removed from the "costs" on the <a href="#goods">"goods"</a> tab.</p>
+<p>If you close an Era, <b>all</b> goods "costs" will be removed from the <a href="#goods">"goods"</a> tab.</p>
+   </div>
+
+<div class="clear">&nbsp;</div>
+
+  <div class="post-thumb"><img src="i/screencapture-localhost-9000-2023-08-20-08_36_12.png"></div>
+  <div class="post-content">
+<h3 class="post-title" id="tech"><a href="#content">Technology</a></h3>
+<p>When you click on an Era button, it will <b>expand</b> to show the Technology branches plus a button for the "resources" and "goods" required to unlock the technology.</p>
+<p>This will cause <b>all</b> the red resources and goods "costs" to be added to the <a href="#goods">"goods"</a> tab.</p>
+<p>When you click a "goods" button it changes color from red to green meaning you "unlocked" it.</p>
+<p>When a Technology is green or "unlocked", it's resources and goods "costs" will be removed from the <a href="#goods">"goods"</a> tab.</p>
+<p>If you close an Era, <b>all</b> resource and goods "costs" will be removed from the <a href="#goods">"goods"</a> tab.</p>
+   </div>
+
+</div>
+</body>
+</html>
+

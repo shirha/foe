@@ -19,14 +19,14 @@
     background-repeat: no-repeat;
     background-color: #fbf4d7; /* #f7d490; */ 
     background-image: url("wallpaperflare.com.jpg");
-    background-position: left;
+    background-position: center;
   }
   h1 {
     cursor: pointer;
     font-family: cursive;
-    color: #ffc34d; 
     font-size: 36px;
     margin: 16px 0 4px 100px;
+    color: #ffc34d; 
     text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;} 
 
   * {
@@ -89,6 +89,12 @@
   #msg, #clearTracker {display: none;}
   #container, #clearTracker {margin-bottom: 50px;}
   #container {display: block;}
+  /*border-radius: 50%; background-color: #ace600; color: black;*/ 
+  #help {text-decoration: none; border-radius: 50%;}
+  #help img {height: 29px; vertical-align: bottom;}
+  @media only screen and (max-width: 500px) {
+    body {background-position: right;}
+  }
   /* https://www.w3schools.com/colors/colors_picker.asp */
 </style>
 </head>
@@ -97,7 +103,9 @@
   <button class="tabs" onclick="tabs(1,this)" id=todo>todo</button>
   <button class="tabs" onclick="tabs(2,this)">goods</button>
   <button class="tabs" onclick="tabs(3,this)">prov</button>
-  <button class="tabs" onclick="tabs(4,this)">tech</button><br>
+  <button class="tabs" onclick="tabs(4,this)">tech</button>
+  <!--button class="tabs" onclick="window.open('help.html')" id="help"><img src="i/help.png"></button-->
+  <div><a href="help.html" id="help"><img src="i/help.png"></a></div><br>
   <div class="label">City:</div>&nbsp;
   <input type="radio" name="city" value="1" checked><div class="w">1</div>&nbsp;
   <input type="radio" name="city" value="2"><div class="w">2</div>&nbsp;
