@@ -264,7 +264,7 @@
       if(response){
         for (let i = 0; i < localStorage.length; i++) {
           let key = localStorage.key(i);
-          let matcher = new RegExp(`foe${state.city}_`);
+          let matcher = new RegExp(`foe${state.city}`);
           if( matcher.test(key) ){
             console.log(key);
             localStorage.removeItem(key);
@@ -593,12 +593,14 @@
       state.great_buildings.forEach(era => {
         console.log(era[0]);
         const eraButton = document.createElement('button');
-        eraButton.textContent = era[0];
         eraButton.className = 'era';
+        eraButton.textContent = era[0];
+        const key = `foe${state.city}gb_${era[0].replace(' ','_')}`;
         eraButton.onclick = function () {
           const nextsibling = eraButton.nextElementSibling;
           nextsibling.style.display = nextsibling.style.display == 'none' ? 'block' : 'none';
           const sign  = nextsibling.style.display == 'none' ? -1 : 1;
+          sign < 0 ? localStorage.setItem(key, 'true') : localStorage.removeItem(key);
           const costs = nextsibling.querySelectorAll('.cost');
           for(let s = 0; s < costs.length; s++){
             const prevsibling = costs[s].previousElementSibling;
@@ -623,6 +625,12 @@
         const eraDiv = document.createElement('div');
         eraDiv.className = 'costs';
         eraDiv.style.display = 'none';
+        // const nextsibling = eraButton.nextElementSibling;
+        // if (!(localStorage.getItem(key) === null)) {
+        //   eraDiv.style.display = 'none';
+        // }else{
+        //   eraDiv.style.display = 'block';
+        // }
 
         era.forEach((branch, index) => {
           // console.log("-branch: ",branch);
@@ -637,12 +645,17 @@
       });
 
       const wikiButton = document.createElement('button');
-      wikiButton.textContent = "wiki";
-      // wikiButton.className = 'era';
+      wikiButton.textContent = 'wiki';
       wikiButton.onclick = function () {
-        window.open(state.host + "Great_Buildings");
+        window.open(state.host + 'Great_Buildings');
       }
       technologyList.appendChild(wikiButton);
+      const happyLink = document.createElement('a');
+      happyLink.textContent = '🙂';
+      happyLink.href = state.happiness;
+      happyLink.style.textDecoration = 'none';
+      happyLink.setAttribute('target', '_blank');
+      technologyList.appendChild(happyLink);
     }
 
     for(let i = 1; i < 5; i++){
@@ -676,6 +689,7 @@
 
       return { city: 1, tab: 1, element: [], fp: [null,[0,0,0],[0,0,0],[0,0,0],[0,0,0]], // [FP,Coins,Supplies]
         host: "https://forgeofempires.fandom.com/wiki/",
+        happiness: "http://www.foeguides.com/gotta-keep-em-happy/#:~:text=Just%20a%20general%20reminder%20though%E2%80%A6%20friends%20don%E2%80%99t%20let%20friends%20build%20Colosseum%20or%20Notre%20Dame.",
         resources: [
           ["Bronze Age", ["Marble", "Lumber", "Dye", "Stone", "Wine"]],
           ["Iron Age", ["Cloth", "Ebony", "Jewelry", "Iron", "Limestone"]],
