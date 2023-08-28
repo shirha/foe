@@ -683,8 +683,13 @@
       if(state.fp[state.city].reduce((accum, n) => accum + n, 0) == 0){
         resourceDiv.style.display = 'none';
       }else{
-        resourceDiv.innerHTML =
-          state.fp[state.city].map(n => ['<img src=Forge.png>','<img src=Coins.png>','<img src=Supplies.png>'][state.city] + n.toString().fmt() ).join('');
+        let rsrc = state.fp[state.city].map((n, i) => {
+          let img = ['<img src=Forge.png>','<img src=Coins.png>','<img src=Supplies.png>'][i];
+          // console.log( img );
+          // console.log( n.toString().fmt() );
+          return img + n.toString().fmt();
+        }).join('');
+        resourceDiv.innerHTML = rsrc;
         resourceDiv.style.display = 'inline-block';
       }
       // console.log(state.fp[state.city]);
