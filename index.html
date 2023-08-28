@@ -343,8 +343,8 @@
         const goodsContainer = document.createElement('table');
         goodsContainer.className = 'goods';
 
-        const key = `foe${state.city}g_${era.replace(/ /g, '_')}`;
-        if (localStorage.getItem(key) === null) {
+        const ekey = `foe${state.city}g_${era.replace(/ /g, '_')}`;
+        if (localStorage.getItem(ekey) === null) {
           goodsContainer.style.display = 'none';
         }else{
           goodsContainer.style.display = 'block';
@@ -407,10 +407,10 @@
         eraButton.onclick = function () {
           if(goodsContainer.style.display === 'none'){
             goodsContainer.style.display = 'block';
-            localStorage.setItem(key, 'true')
+            localStorage.setItem(ekey, 'true')
           }else{
             goodsContainer.style.display = 'none';
-            localStorage.removeItem(key)
+            localStorage.removeItem(ekey)
           }
           // goodsContainer.style.display = goodsContainer.style.display === 'none' ? 'block' : 'none';
           // sign > 0 ? localStorage.setItem(key, 'true') : localStorage.removeItem(key);
@@ -422,18 +422,27 @@
       const provinceList = document.getElementById(`pl${state.city}`);
       state.provinces.forEach(era => {
         // console.log(era[0]);
+
+        const eraDiv = document.createElement('div');
+        eraDiv.className = 'sectors';
+
+        const pkey = `foe${state.city}p_${era[0].replace(/ /g, '_')}`;
+        if (localStorage.getItem(pkey) === null) {
+          eraDiv.style.display = 'none';
+        }else{
+          eraDiv.style.display = 'block';
+        }
+
         const eraButton = document.createElement('button');
         eraButton.textContent = era[0]; // .replace(/_/g, ' ');
         eraButton.className = 'era';
-        const pkey = `foe${state.city}p_${era[0].replace(/ /g, '_')}`;
 
         eraButton.onclick = function () {
-          const sibling = eraButton.nextElementSibling;
-          sibling.style.display = sibling.style.display == 'none' ? 'block' : 'none';
-          const sign = sibling.style.display == 'none' ? -1 : 1;
+          eraDiv.style.display = eraDiv.style.display == 'none' ? 'block' : 'none';
+          const sign = eraDiv.style.display == 'none' ? -1 : 1;
           sign > 0 ? localStorage.setItem(pkey, 'true') : localStorage.removeItem(pkey);
 
-          const sectors = sibling.querySelectorAll('.sector');
+          const sectors = eraDiv.querySelectorAll('.sector');
           for(let s = 0; s < sectors.length; s++){
             if(!sectors[s].classList.contains('conquer')){
               accumGoods(sectors[s].textContent, sign);
@@ -441,15 +450,6 @@
           }
         };
         provinceList.appendChild(eraButton);
-
-        const eraDiv = document.createElement('div');
-        eraDiv.className = 'sectors';
-
-        if (localStorage.getItem(pkey) === null) {
-          eraDiv.style.display = 'none';
-        }else{
-          eraDiv.style.display = 'block';
-        }
 
         era.forEach((province, index) => {
           if(index == 0) return;
@@ -493,18 +493,27 @@
       const resourceDiv = document.getElementById(`rl${state.city}`).firstElementChild;
       state.technologys.forEach(era => {
         // console.log(era[0]);
+
+        const eraDiv = document.createElement('div');
+        eraDiv.className = 'techs';
+
+        const ekey = `foe${state.city}t_${era[0].replace(/ /g, '_')}`;
+        if (localStorage.getItem(ekey) === null) {
+          eraDiv.style.display = 'none';
+        }else{
+          eraDiv.style.display = 'block';
+        }
+
         const eraButton = document.createElement('button');
         eraButton.textContent = era[0];
         eraButton.className = 'era';
-        const ekey = `foe${state.city}t_${era[0].replace(/ /g, '_')}`;
 
         eraButton.onclick = function () {
-          const nextsibling = eraButton.nextElementSibling;
-          nextsibling.style.display = nextsibling.style.display == 'none' ? 'block' : 'none';
-          const sign = nextsibling.style.display == 'none' ? -1 : 1;
+          eraDiv.style.display = eraDiv.style.display == 'none' ? 'block' : 'none';
+          const sign = eraDiv.style.display == 'none' ? -1 : 1;
           sign > 0 ? localStorage.setItem(ekey, 'true') : localStorage.removeItem(ekey);
 
-          const techs = nextsibling.querySelectorAll('.tech');
+          const techs = eraDiv.querySelectorAll('.tech');
           for(let s = 0; s < techs.length; s++){
             if(!(techs[s].classList.contains('conquer'))){
               const prevsibling = techs[s].previousElementSibling;
@@ -516,17 +525,7 @@
           }
           checkResource();
         }
-
         technologyList.appendChild(eraButton);
-
-        const eraDiv = document.createElement('div');
-        eraDiv.className = 'techs';
-
-        if (localStorage.getItem(ekey) === null) {
-          eraDiv.style.display = 'none';
-        }else{
-          eraDiv.style.display = 'block';
-        }
 
         era.forEach((branch, index) => {
           // console.log("-branch: ",branch);
@@ -577,38 +576,39 @@
       const greatList = document.getElementById(`gl${state.city}`);
       state.great_buildings.forEach(era => {
         // console.log(era[0]);
-        const eraButton = document.createElement('button');
-        eraButton.className = 'era';
-        eraButton.textContent = era[0];
-        const key = `foe${state.city}gb_${era[0].replace(/ /g, '_')}`;
-
-        eraButton.onclick = function () {
-          const nextsibling = eraButton.nextElementSibling;
-          nextsibling.style.display = nextsibling.style.display == 'none' ? 'block' : 'none';
-          const sign = nextsibling.style.display == 'none' ? -1 : 1;
-          sign > 0 ? localStorage.setItem(key, 'true') : localStorage.removeItem(key);
-          const costs = nextsibling.querySelectorAll('.cost');
-          for(let s = 0; s < costs.length; s++){
-            if(!(costs[s].textContent == "None")){
-              accumGoods(costs[s].textContent, sign);
-            }
-          }
-          const rsrc = nextsibling.firstElementChild;
-          accumResource(rsrc.innerHTML, sign);
-          checkResource();
-        }
-        greatList.appendChild(eraButton);
 
         const eraDiv = document.createElement('div');
         eraDiv.className = 'costs';
 
         // display total resource costs, or not
-        if (localStorage.getItem(key) === null) {
+        const ekey = `foe${state.city}gb_${era[0].replace(/ /g, '_')}`;
+        if (localStorage.getItem(ekey) === null) {
           eraDiv.style.display = 'none';
         }else{
           eraDiv.style.display = 'block';
           accumResource(era[1], 1);
         }
+
+        const eraButton = document.createElement('button');
+        eraButton.className = 'era';
+        eraButton.textContent = era[0];
+
+        eraButton.onclick = function () {
+          eraDiv.style.display = eraDiv.style.display == 'none' ? 'block' : 'none';
+          const sign = eraDiv.style.display == 'none' ? -1 : 1;
+          sign > 0 ? localStorage.setItem(ekey, 'true') : localStorage.removeItem(ekey);
+
+          const costs = eraDiv.querySelectorAll('.cost');
+          for(let s = 0; s < costs.length; s++){
+            if(costs[s].textContent != "None"){
+              accumGoods(costs[s].textContent, sign);
+            }
+          }
+
+          accumResource(era[1], sign);
+          checkResource();
+        }
+        greatList.appendChild(eraButton);
 
         era.forEach((branch, index) => {
           // console.log("-branch: ",branch);
