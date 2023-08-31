@@ -589,16 +589,18 @@
           // console.log("-branch: ",branch);
           if(index == 0) return;
 
+          const wrapDiv = document.createElement('div');
+          wrapDiv.className = 'wrap';
 
           const branchButton = document.createElement('button');
           branchButton.textContent = branch[0];
           branchButton.className = 'branch';
-          eraDiv.appendChild(branchButton);
+          wrapDiv.appendChild(branchButton);
 
           const needButton = document.createElement('button');
           needButton.innerHTML = branch[1];
           needButton.className = 'need';
-          eraDiv.appendChild(needButton);
+          wrapDiv.appendChild(needButton);
 
           // console.log("-tech: ",branch[2]);
           const techButton = document.createElement('button');
@@ -657,8 +659,9 @@
             checkResource();
             accumGoods(branch[2], sign);
           };
-          eraDiv.appendChild(techButton);
-          eraDiv.appendChild( document.createElement('br') );
+          wrapDiv.appendChild(techButton);
+          eraDiv.appendChild(wrapDiv);
+          // eraDiv.appendChild( document.createElement('br') );
         });
 
         const techLink = document.createElement('a');
