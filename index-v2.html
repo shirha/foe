@@ -48,9 +48,6 @@
   input {padding-left: 4px; border: #bcbcbc solid 1px;}
   input[type="checkbox"] {margin: 0; width: 20px;}
   input[type="number"] {width: 80px; text-align: right; margin: 0; padding: 0 5px 0 0;}
-  .negotiate {
-    text-align: right; padding: 0 5px 0 0;
-    background: #ffffff; width: 60px;}
   .era {display: block; width: 336px;}
   .province, .branch {background-color: #cceeff;} /* blue */
   .sector, .tech {background-color: #ffe6f3;} /* red */
@@ -94,11 +91,11 @@
   #container {display: block;}
   /*border-radius: 50%; background-color: #ace600; color: black;*/ 
   #help {text-decoration: none; border-radius: 50%;}
-  #help img, .link {height: 29px; vertical-align: bottom;}
-  .link {margin-right: 4px; height: 29px;}
+  #help img {height: 29px; vertical-align: bottom;}
   .cost {background-color: #ffe6b3;}
-  a {text-decoration: none; display:inline-block;}
-  .prov {display: inline-block;}
+  .negotiate {
+    text-align: right; padding: 0 5px 0 0;
+    background: #ffffff; width: 60px;}
 
   @media only screen and (max-width: 500px) {
     body {background-position: right;}
@@ -138,23 +135,24 @@
   <button onclick="addPresetNote('Goods')">G</button>
   <button onclick="addPresetNote('Event')">E</button><br>
   <div id="ol"></div></div>
-  <div class="rl" id="rl1"></div>
-  <div class="rl" id="rl2"></div>
-  <div class="rl" id="rl3"></div>
-  <div class="rl" id="rl4"></div>
-  <div class="pl" id="pl1"></div>
-  <div class="pl" id="pl2"></div>
-  <div class="pl" id="pl3"></div>
-  <div class="pl" id="pl4"></div>
-  <div class="tl" id="tl1"></div>
-  <div class="tl" id="tl2"></div>
-  <div class="tl" id="tl3"></div>
-  <div class="tl" id="tl4"></div>
-  <div class="gl" id="gl1"></div>
-  <div class="gl" id="gl2"></div>
-  <div class="gl" id="gl3"></div>
-  <div class="gl" id="gl4"></div>
-
+  <div id="lists">
+    <div class="rl" id="rl1"></div>
+    <div class="rl" id="rl2"></div>
+    <div class="rl" id="rl3"></div>
+    <div class="rl" id="rl4"></div>
+    <div class="pl" id="pl1"></div>
+    <div class="pl" id="pl2"></div>
+    <div class="pl" id="pl3"></div>
+    <div class="pl" id="pl4"></div>
+    <div class="tl" id="tl1"></div>
+    <div class="tl" id="tl2"></div>
+    <div class="tl" id="tl3"></div>
+    <div class="tl" id="tl4"></div>
+    <div class="gl" id="gl1"></div>
+    <div class="gl" id="gl2"></div>
+    <div class="gl" id="gl3"></div>
+    <div class="gl" id="gl4"></div>
+  </div>
   <button id="clearTracker">×</button>
   <div id="msg"></div><p style="color:#ffc34d;">.</p>
   <script>
@@ -330,214 +328,176 @@
     }
 
     function resetTracker(){
-      const resourceList = document.getElementById(`rl${state.city}`);
-      resourceList.replaceChildren();
-      const fpDiv = document.createElement('div');
-      fpDiv.className = 'fp';
-      fpDiv.style.display = 'none';
-      resourceList.appendChild(fpDiv);
+      let resourceList = `div id="rl${state.city}" class="rl"><div class="fp"></div>`;
+      // const resourceList = document.getElementById(`rl${state.city}`);
+      // resourceList.replaceChildren();
+      // const fpDiv = document.createElement('div');
+      // fpDiv.className = 'fp';
+      // fpDiv.style.display = 'none';
+      // resourceList.appendChild(fpDiv);
 
       state.resources.forEach(([era, goods],era_index) => {
-        // console.log(era);
+      //   // console.log(era);
+      //   const eraButton = document.createElement('button');
+      //   eraButton.textContent = era;
+      //   eraButton.className = 'era';
+      //   resourceList.appendChild(eraButton);
+      resourceList += `<button class="era">${era}</button>`;
 
-        const goodsContainer = document.createElement('table');
-        goodsContainer.className = 'goods';
+
+      //   const  goodsContainer =document.createElement('table');
+      //   goodsContainer.className = 'goods';
 
         const ekey = `foe${state.city}g_${era.replace(/ /g, '_')}`;
+        // if (localStorage.getItem(ekey) === null) {
+        //   goodsContainer.style.display = 'none';
+        // }else{
+        //   goodsContainer.style.display = 'block';
+        // }
+
+        let style;
         if (localStorage.getItem(ekey) === null) {
-          goodsContainer.style.display = 'none';
+          style = 'none';
         }else{
-          goodsContainer.style.display = 'block';
+          style = 'block';
         }
 
-        const eraButton = document.createElement('button');
-        eraButton.textContent = era;
-        eraButton.className = 'era';
-
-        eraButton.onclick = function () {
-          if(goodsContainer.style.display === 'none'){
-            goodsContainer.style.display = 'block';
-            localStorage.setItem(ekey, 'true')
-          }else{
-            goodsContainer.style.display = 'none';
-            localStorage.removeItem(ekey)
-          }
-        };
-        resourceList.appendChild(eraButton);
-        resourceList.appendChild(goodsContainer);
+      //   // goodsContainer.style.display = 'none';
+      //   resourceList.appendChild(goodsContainer);
+        resourceList += `<table class="goods" style="display:${style};">`;
 
         goods.forEach((good, good_index) => {
-          // console.log('-',good);
-          const gkey = 'foe' + state.city + '_' + good;
-          const tr = document.createElement('tr');
+      //     // console.log('-',good);
+      //     const localStorageKey = 'foe' + state.city + '_' + good; // Add 'foe_' prefix
+        let gkey = `foe${state.city}_${good}`;
+      //     const tr = document.createElement('tr');
+        let input = localStorage.getItem(gkey) || '';
+        resourceList += `<tr><td><input type="checkbox"></td><td>${good}</td><td><input type="number" min="0"></td><td class="negotiate">0</td></tr>`;
+      //     // resource deposit checkbox
+      //     let td = document.createElement('td');
+      //     const checkbox = document.createElement('input');
+      //     checkbox.type = 'checkbox';
+      //     checkbox.checked = localStorage.getItem(localStorageKey + '_deposit') == 'true' ? true : false;
+      //     checkbox.addEventListener('change', function() {
+      //       if (this.checked) {
+      //         localStorage.setItem(localStorageKey + '_deposit', 'true');
+      //       } else {
+      //         localStorage.removeItem(localStorageKey + '_deposit');
+      //       }
+      //     });
+      //     td.appendChild(checkbox);
+      //     tr.appendChild(td);
 
-          // resource deposit checkbox
-          let td = document.createElement('td');
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.checked = localStorage.getItem(gkey + '_deposit') == 'true' ? true : false;
-          checkbox.addEventListener('change', function() {
-            if (this.checked) {
-              localStorage.setItem(gkey + '_deposit', 'true');
-            } else {
-              localStorage.removeItem(gkey + '_deposit');
-            }
-          });
-          td.appendChild(checkbox);
-          tr.appendChild(td);
+      //     // resource name
+      //     td = document.createElement('td');
+      //     td.textContent = good; // + ': ';
+      //     tr.appendChild(td);
 
-          // resource name
-          td = document.createElement('td');
-          td.textContent = good; // + ': ';
-          tr.appendChild(td);
+      //     // inventory amount
+      //     td = document.createElement('td');
+      //     const input = document.createElement('input');
+      //     input.type = 'number';
+      //     input.min = '0';
+      //     input.value = localStorage.getItem(localStorageKey) || '';
+      //     input.addEventListener('input', () => {
+      //       localStorage.setItem(localStorageKey, input.value);
+      //     });
+      //     td.appendChild(input);
+      //     tr.appendChild(td);
 
-          // inventory amount
-          td = document.createElement('td');
-          const input = document.createElement('input');
-          input.type = 'number';
-          input.min = '0';
-          input.value = localStorage.getItem(gkey) || '';
-          input.addEventListener('input', () => {
-            localStorage.setItem(gkey, input.value);
-          });
-          td.appendChild(input);
-          tr.appendChild(td);
+      //     if(!(good in resource_index)){
+      //       resource_index[good] = [];
+      //       resource_index[good][0] = 10*era_index+good_index;              
+      //     }
+      //     td = document.createElement('td');
+      //     td.style.background = 'white';
+      //     td.className = 'negotiate';
+      //     td.textContent = 0;
+      //     resource_index[good][state.city] = td;
+      //     tr.appendChild(td);
+      //     goodsContainer.appendChild(tr);
+      //   });
 
-          if(!(good in resource_index)){
-            resource_index[good] = [];
-            resource_index[good][0] = 10*era_index+good_index;              
-          }
-          td = document.createElement('td');
-          td.style.background = 'white';
-          td.className = 'negotiate';
-          td.textContent = 0;
-          resource_index[good][state.city] = td;
-          tr.appendChild(td);
-          goodsContainer.appendChild(tr);
-        });
-      });
+      //   // eraButton.addEventListener('click', () => {
+      //   eraButton.onclick = function () {
+      //     if(goodsContainer.style.display === 'none'){
+      //       goodsContainer.style.display = 'block';
+      //       localStorage.setItem(ekey, 'true')
+      //     }else{
+      //       goodsContainer.style.display = 'none';
+      //       localStorage.removeItem(ekey)
+      //     }
+      //     // goodsContainer.style.display = goodsContainer.style.display === 'none' ? 'block' : 'none';
+      //     // sign > 0 ? localStorage.setItem(key, 'true') : localStorage.removeItem(key);
+      //   };
+      // });
     }
 
     function resetProvince(){
       const provinceList = document.getElementById(`pl${state.city}`);
-
-      // each Era
-
       state.provinces.forEach(era => {
         // console.log(era[0]);
 
         const eraDiv = document.createElement('div');
         eraDiv.className = 'sectors';
 
-        const ekey = `foe${state.city}p_${era[0].replace(/ /g, '_')}`;
-        const era_visible = !(localStorage.getItem(ekey) === null);
-
-        eraDiv.style.display = era_visible ? 'block' : 'none';
+        const pkey = `foe${state.city}p_${era[0].replace(/ /g, '_')}`;
+        if (localStorage.getItem(pkey) === null) {
+          eraDiv.style.display = 'none';
+        }else{
+          eraDiv.style.display = 'block';
+        }
 
         const eraButton = document.createElement('button');
-        eraButton.textContent = era[0];
+        eraButton.textContent = era[0]; // .replace(/_/g, ' ');
         eraButton.className = 'era';
 
         eraButton.onclick = function () {
           eraDiv.style.display = eraDiv.style.display == 'none' ? 'block' : 'none';
           const sign = eraDiv.style.display == 'none' ? -1 : 1;
-          sign > 0 ? localStorage.setItem(ekey, 'true') : localStorage.removeItem(ekey);
+          sign > 0 ? localStorage.setItem(pkey, 'true') : localStorage.removeItem(pkey);
 
           const sectors = eraDiv.querySelectorAll('.sector');
           for(let s = 0; s < sectors.length; s++){
-            let conquer = sectors[s].classList.contains('conquer');
-            let visible = sectors[s].style.display != 'none';
-            if(!conquer && visible){
+            if(!sectors[s].classList.contains('conquer')){
               accumGoods(sectors[s].textContent, sign);
             }
           }
         };
         provinceList.appendChild(eraButton);
 
-        // each Province
-
         era.forEach((province, index) => {
           if(index == 0) return;
           // console.log("-",province[0]);
-
-          const provDiv = document.createElement('div');
-          provDiv.className = 'prov';
-
           const provinceButton = document.createElement('button');
-          provinceButton.textContent = province[0];
+          provinceButton.textContent = province[0]; // .replace(/_/g, ' ');
           provinceButton.className = 'province';
-
-          const pkey = `foe${state.city}_${province[0].replace(/ /g, '_')}`;
-          const prov_visible = localStorage.getItem(pkey) === null; // visible by default
-
-          provinceButton.onclick = function () {
-
-            if (localStorage.getItem(pkey) === null){
-              localStorage.setItem(pkey, 'false');
-              sign = -1; // hidden
-            }else{
-              localStorage.removeItem(pkey);
-              sign = 1; // visible
-            }
-
-            const sectors = provDiv.querySelectorAll('.sector');
-            for(let s = 0; s < sectors.length; s++){
-              if(!sectors[s].classList.contains('conquer')){ // not green!
-                accumGoods(sectors[s].textContent, sign);
-              }
-
-              if(sign > 0){
-                sectors[s].style.display = 'inline-block';
-              }else{
-                sectors[s].style.display = 'none'; // hidden
-              }
-            }
-          };
-          provDiv.appendChild(provinceButton);
-
-          const provLink = document.createElement('a');
-          provLink.href = state.host + province[0].replace(/ /g, '_');
-          provLink.setAttribute('target', '_blank');
-
-          const imgLink = document.createElement('img');
-          imgLink.className = 'link';
-          imgLink.src = "linkicon2.png";
-          provLink.appendChild(imgLink);
-
-          provDiv.appendChild(provLink);
-
-          // each Sector
+          provinceButton.onclick = () => window.open(state.host + province[0]);
+          eraDiv.appendChild(provinceButton);
 
           province.forEach( ([sector, wave, army, goods, loot], index) => {
             if(index == 0) return;
             // console.log(goods);
-
             const sectorButton = document.createElement('button');
             sectorButton.textContent = goods.join(' ');
             sectorButton.className = 'sector';
 
-            const skey = `foe${state.city}_${province[0]}_${sector}`;
-            const sector_conquer = !(localStorage.getItem(skey) === null);
-
-            if(sector_conquer){
+            const skey = `foe${state.city}_${province[0]}_${sector}`; // closure !
+            if (!(localStorage.getItem(skey) === null)) {
               sectorButton.classList.add('conquer');
-            }
-            sectorButton.style.display = prov_visible ? 'inline-block' : 'none';
-
-            if(era_visible && prov_visible && !sector_conquer){
+            }else if(eraDiv.style.display != 'none'){
               accumGoods(sectorButton.textContent, 1);
             }
 
-            sectorButton.onclick = function () { // can't click sector if hidden !
+            sectorButton.onclick = function () {
               sectorButton.classList.toggle('conquer');
               const sign = sectorButton.classList.contains('conquer') ? -1 : 1;
               sign < 0 ? localStorage.setItem(skey, 'true') : localStorage.removeItem(skey);
               accumGoods(sectorButton.textContent, sign);
             };
-            provDiv.appendChild(sectorButton);
+            eraDiv.appendChild(sectorButton);
           });
-          eraDiv.appendChild( provDiv );
-          // eraDiv.appendChild( document.createElement('br') );
+          eraDiv.appendChild( document.createElement('br') );
         });
         provinceList.appendChild(eraDiv);
       });
@@ -546,9 +506,6 @@
     function resetTechnology(){
       const technologyList = document.getElementById(`tl${state.city}`);
       const resourceDiv = document.getElementById(`rl${state.city}`).firstElementChild;
-
-      // each Era
-
       state.technologys.forEach(era => {
         // console.log(era[0]);
 
@@ -556,9 +513,11 @@
         eraDiv.className = 'techs';
 
         const ekey = `foe${state.city}t_${era[0].replace(/ /g, '_')}`;
-        const era_visible = !(localStorage.getItem(ekey) === null);
-
-        eraDiv.style.display = era_visible ? 'block' : 'none';
+        if (localStorage.getItem(ekey) === null) {
+          eraDiv.style.display = 'none';
+        }else{
+          eraDiv.style.display = 'block';
+        }
 
         const eraButton = document.createElement('button');
         eraButton.textContent = era[0];
@@ -571,7 +530,7 @@
 
           const techs = eraDiv.querySelectorAll('.tech');
           for(let s = 0; s < techs.length; s++){
-            if(!techs[s].classList.contains('conquer') && techs[s].style.display != 'none'){
+            if(!(techs[s].classList.contains('conquer'))){
               const prevsibling = techs[s].previousElementSibling;
               accumResource(prevsibling.innerHTML, sign);
               if(techs[s].textContent != "None"){
@@ -583,16 +542,16 @@
         }
         technologyList.appendChild(eraButton);
 
-        // each Branch
-
         era.forEach((branch, index) => {
           // console.log("-branch: ",branch);
           if(index == 0) return;
-
-
           const branchButton = document.createElement('button');
           branchButton.textContent = branch[0];
           branchButton.className = 'branch';
+          branchButton.onclick = (e) => {
+            const url = e.target.parentElement.previousElementSibling.textContent.replace(/ /g, '_');
+            window.open(state.host + url + "_Technologies");
+          };
           eraDiv.appendChild(branchButton);
 
           const needButton = document.createElement('button');
@@ -606,53 +565,17 @@
           techButton.className = 'tech';
 
           const bkey = `foe${state.city}_${branch[0].replace(/ /g, '_')}`;
-          const ckey = bkey + '_conquer';
-          const branch_visible = localStorage.getItem(bkey) === null;
-          const branch_conquer = !(localStorage.getItem(ckey) === null);
-
-          if(branch_conquer){
+          if (!(localStorage.getItem(bkey) === null)) {
             techButton.classList.add('conquer');
+          }else if(eraDiv.style.display != 'none'){
+            accumResource(branch[1], 1);
+            accumGoods(branch[2], 1);
           }
 
-          if (branch_visible){
-            needButton.style.display = 'inline-block';
-            techButton.style.display = 'inline-block';
-
-            if(era_visible && !branch_conquer){
-              accumResource(branch[1], 1);
-              accumGoods(branch[2], 1);
-            }
-          }else{
-            needButton.style.display = 'none';
-            techButton.style.display = 'none';
-          }
-          // if(era_visible) console.log(`${branch[0]} ${branch_visible} ${branch_conquer}`)
-
-          branchButton.onclick = function() {
-            const branch_visible = localStorage.getItem(bkey) === null;
-            const branch_conquer = localStorage.getItem(ckey) === null;
-
-            if (branch_visible){
-              localStorage.setItem(bkey, 'false');
-              sign = -1; // hidden
-              needButton.style.display = 'none';
-              techButton.style.display = 'none';
-            }else{
-              localStorage.removeItem(bkey);
-              sign = 1; // visible
-              needButton.style.display = 'inline-block';
-              techButton.style.display = 'inline-block';
-            }
-            if(!branch_conquer){
-              accumResource(branch[1], sign);
-              accumGoods(branch[2], sign);
-            }
-          }
-
-          techButton.onclick = function () { // can't click if hidden !
+          techButton.onclick = function () {
             techButton.classList.toggle('conquer');
             const sign = techButton.classList.contains('conquer') ? -1 : 1;
-            sign < 0 ? localStorage.setItem(ckey, 'true') : localStorage.removeItem(ckey);
+            sign < 0 ? localStorage.setItem(bkey, 'true') : localStorage.removeItem(bkey);
             accumResource(branch[1], sign);
             checkResource();
             accumGoods(branch[2], sign);
@@ -660,17 +583,6 @@
           eraDiv.appendChild(techButton);
           eraDiv.appendChild( document.createElement('br') );
         });
-
-        const techLink = document.createElement('a');
-        techLink.href = state.host + era[0].replace(/ /g, '_') + "_Technologies";
-        techLink.setAttribute('target', '_blank');
-
-        const imgLink = document.createElement('img');
-        imgLink.className = 'link';
-        imgLink.src = "linkicon2.png";
-        techLink.appendChild(imgLink);
-        eraDiv.appendChild(techLink);
-
         technologyList.appendChild(eraDiv);
       });
     }
@@ -742,7 +654,7 @@
       const happyLink = document.createElement('a');
       happyLink.textContent = '🙂';
       happyLink.href = state.happiness;
-      // happyLink.style.textDecoration = 'none';
+      happyLink.style.textDecoration = 'none';
       happyLink.setAttribute('target', '_blank');
       greatList.appendChild(happyLink);
     }
