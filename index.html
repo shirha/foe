@@ -811,19 +811,17 @@
       let text = await navigator.clipboard.readText();
       db = JSON.parse(text);
       console.log(db);
-      if( !/^[,\d\[\]\s]+$/.test(db) ) {
-        alert('ClipBoard error: ',db)
-        return;
-      }
-      for (let i = 0; i < 3; i++){
-        let selector = '#rl' + (i+1) + ' input[type="number"]';        
-        input = document.querySelectorAll(selector)
-        for (let j = 0; j < db[i].length; j++){
-          input[j].value = db[i][j];
-        }
-      }
-    }
+      if( !/^[,\d\[\]\s"]+$/.test(db) ) return;
 
+      for (let i = 0; i < 4; i++){
+        if(db[i].length > 0){
+          let selector = '#rl' + (i+1) + ' input[type="number"]';        
+          input = document.querySelectorAll(selector)
+          for (let j = 0; j < db[i].length; j++){
+            if(!(db[i][j] === '')){
+              input[j].value = db[i][j];
+    } } } } }
+//                      v                              v                v                    v
 // [[278, 71, 262, 50, 76, 77, 120, 42, 29, 102, 550, 173, 1367, 1107, 170, 64, 47, 41, 72, 96], [170, 48, 7, 143, 49, 157, 100, 30, 123, 47, 495, 319, 675, 352, 1178, 94, 120, 99, 110, 90], [127, 11, 75, 138, 25, 19, 199, 270, 135, 114, 603, 416, 556, 437, 385, 14, 15, 9, 5, 0]]
 // [[278, 71, 252, 50, 75, 77, 120, 42, 29, 102, 550, 1073, 1367, 1107, 1070, 64, 47, 41, 72, 95], [170, 40, 7, 143, 49, 157, 100, 30, 123, 47, 495, 319, 675, 352, 1170, 94, 120, 99, 110, 90], [127, 11, 75, 136, 25, 19, 199, 270, 135, 1114, 603, 415, 555, 437, 305, 14, 15, 9, 5, 8]]
     // document.getElementById('msg').innerHTML = document.getElementById('rl').offsetWidth;
