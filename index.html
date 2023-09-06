@@ -805,7 +805,7 @@
     document.querySelector('h1').onclick = async function (){
       let text = await navigator.clipboard.readText();
       console.log(text);
-      if( !/^[,\d\[\]\s"]+$/.test(test) ) return;
+      if( !/^[,\d\[\]\s"]+$/.test(text) ) return;
       db = JSON.parse(text);
 
       for (let i = 0; i < 4; i++){
