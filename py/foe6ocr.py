@@ -5,11 +5,25 @@ import json
 # import foe2json as m
 # foe2json
 
+class Saved:
+  def __init__(self):
+    self.digits = 0
+    self.thr = 1
+    # highest_threshold
+    self.ht = []
+  def set(self, digits, thr):
+    self.digits = digits
+    self.thr = thr
+    self.ht.append(thr)
+  def repl(self, digits, thr):
+    self.digits = digits
+    self.thr = thr
+    self.ht[len(self.ht)-1] = thr
+
 def group_digits_by_distance(sorted_distance, sorted_digits, sorted_pts, sorted_thr):
   grouped_digits = []
   current_group = []
-  # highest_threshold
-  ht = []
+  saved = Saved()
 
   for i in range(len(sorted_digits)):
     if i == 0:
@@ -20,21 +34,19 @@ def group_digits_by_distance(sorted_distance, sorted_digits, sorted_pts, sorted_
       dy = abs(sorted_pts[i][1] - sorted_pts[i - 1][1])
     rpt = f'{sorted_digits[i]}, dx={dx:2d}, dy={dy:2d}, pt={sorted_pts[i]}, t={sorted_thr[i]:.3f}'
   
+  # digits are 6x10 and 7px apart. There are 5 rows of goods and they are 27px apart (y=6,33,60,87,114)
+  # if two digits are competing for the same position, the lowest threshold wins
+
     if i == 0 or dy < 10:
-      hd='a='
-      print(f'{sorted_distance[i]:3d} a=',rpt,f' [i==0: dx={sorted_pts[i - 1][0]}, dy={sorted_pts[i - 1][1]}'if i == 0 else '')
+      print(f'{sorted_distance[i]:3d} a=', rpt) 
       if dx > 3:
         current_group.append(sorted_digits[i])
-        saved_digits = sorted_digits[i]
-        saved_thr = sorted_thr[i]
-        ht.append(saved_thr)
+        saved.set(sorted_digits[i], sorted_thr[i])
       else:
-        print(f'       {sorted_digits[i]}, {sorted_thr[i]:.3f} < {saved_digits}, {saved_thr:.3f}', "replace" if sorted_thr[i] < saved_thr else "")
-        if sorted_thr[i] < saved_thr:
+        print(f'       {sorted_digits[i]}, {sorted_thr[i]:.3f} < {saved.digits}, {saved.thr:.3f}', "replace" if sorted_thr[i] < saved.thr else "")
+        if sorted_thr[i] < saved.thr:
           current_group[len(current_group)-1] = sorted_digits[i]
-          saved_digits = sorted_digits[i]
-          saved_thr = sorted_thr[i]
-          ht[len(ht)-1] = saved_thr
+          saved.repl(sorted_digits[i], sorted_thr[i])
     else:
       if current_group:
         print('current_group=',current_group,'\n')
@@ -42,14 +54,12 @@ def group_digits_by_distance(sorted_distance, sorted_digits, sorted_pts, sorted_
         current_group = []
       print(f'{sorted_distance[i]:3d} b=',rpt)
       current_group.append(sorted_digits[i])
-      saved_digits = sorted_digits[i]
-      saved_thr = sorted_thr[i]
-      ht.append(saved_thr)
+      saved.set(sorted_digits[i], sorted_thr[i])
 
   if current_group:
     print('current_group~',current_group)
     grouped_digits.append(current_group)
-  print('highest_threshold: ',max(ht),'\n')
+  print('highest_threshold: ',max(saved.ht),'\n')
 
   return grouped_digits
 
@@ -185,11 +195,13 @@ for city in range(len(db)):
     large_image = cv2.imread(png, cv2.IMREAD_GRAYSCALE)
 
     # the anchor finds the inventory screen whether fullscreen or not
+
     result = cv2.matchTemplate(large_image, anchor, cv2.TM_SQDIFF_NORMED)
     mn,_,mnLoc,_ = cv2.minMaxLoc(result)
     MPx,MPy = mnLoc
 
     # the viewport is 69px below the anchor and 6px right, it's 690x373
+
     viewport = large_image[MPy+69:MPy+69+373,MPx+6:MPx+6+690]
     print(f'{mn:.3f}',mnLoc,'anchor') # ,viewport.shape,viewport.dtype)
     # show(viewport)
@@ -220,19 +232,18 @@ for city in range(len(db)):
           crop_image = viewport[MPy+32:MPy+32+130,MPx+270+j*350:MPx+270+j*350+60]
           db[city][i*2+j] = template_matching(crop_image, templates, digit_coordinates, digit_thresholds)
           # show(crop_image)
-          # cropped_images_top.append(crop_image)
 
           if j == 0: # dark(i*2+j): #
             cropped_images_top.append(crop_image)
           else:
             cropped_images_bottom.append(crop_image)
 
+# print(json.dumps(db))
 trimdb(db)
 with open("D:/Users/shirha/Google Drive/foe_inventory.json", "w") as f:
   f.write(json.dumps(db))
 for i in range(len(db)):
   print(f'{i}:{db[i]}')
-# print(json.dumps(db))
 
 top_row = np.hstack(cropped_images_top)
 bottom_row = np.hstack(cropped_images_bottom)
