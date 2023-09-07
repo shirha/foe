@@ -807,6 +807,7 @@
       console.log(text);
       if( !/^[,\d\[\]\s"]+$/.test(text) ) return;
       db = JSON.parse(text);
+      if(db.length != 4) return;
 
       for (let i = 0; i < 4; i++){
         if(db[i].length > 0){
@@ -819,7 +820,6 @@
               const gkey = `foe${i+1}_${good}`;
               localStorage.setItem(gkey, db[i][j]);
               console.log(gkey, db[i][j]);
-
     } } } } }
 
     // document.getElementById('msg').innerHTML = document.getElementById('rl').offsetWidth;

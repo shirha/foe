@@ -43,7 +43,11 @@ def group_digits_by_distance(sorted_distance, sorted_digits, sorted_pts, sorted_
         current_group.append(sorted_digits[i])
         saved.set(sorted_digits[i], sorted_thr[i])
       else:
-        print(f'       {sorted_digits[i]}, {sorted_thr[i]:.3f} < {saved.digits}, {saved.thr:.3f}', "replace" if sorted_thr[i] < saved.thr else "")
+        print('      ',
+          f'{sorted_digits[i]}, {sorted_thr[i]:.3f}', '<', 
+          f'{saved.digits}, {saved.thr:.3f}', 
+            'replace' if sorted_thr[i] < saved.thr else '')
+
         if sorted_thr[i] < saved.thr:
           current_group[len(current_group)-1] = sorted_digits[i]
           saved.repl(sorted_digits[i], sorted_thr[i])
@@ -57,7 +61,7 @@ def group_digits_by_distance(sorted_distance, sorted_digits, sorted_pts, sorted_
       saved.set(sorted_digits[i], sorted_thr[i])
 
   if current_group:
-    print('current_group~',current_group)
+    print('current_group≡',current_group)
     grouped_digits.append(current_group)
   print('highest_threshold: ',max(saved.ht),'\n')
 
@@ -78,36 +82,20 @@ def trimdb(db):
       else:
         break
 
-def dark(num): # dark BG by sect: 0,1,2,3 => 0,0,1,1
-  return 0 if (num // 2) % 2 == 0 else 1
-
-# digit_coordinates = {
-#   '0': [],
-#   '1': [(10, 37), (16, 37)],
-#   '2': [(17, 10), (9, 91), (17, 118)],
-#   '3': [],
-#   '4': [(17, 64), (24, 64), (23, 91)],
-#   '5': [(16, 91)],
-#   '6': [(24, 118)],
-#   '7': [(24, 10)],
-#   '8': [(23, 37)],
-#   '9': []
-# }
-
 def analyze(digit_coordinates, digit_thresholds):
   dbg = 1
 
-  values = [
-    # squares(digit_coordinates_json[str(i)]) 
-    squares(digit_coordinates[str(i)]) 
-    for i in range(10)]
+  # _IF_ TypeError: Object of type int64 is not JSON serializable _THEN_ use
+  # digit_coordinates_json = {key: [(int(x), int(y)) for x, y in values] 
+  #   for key, values in digit_coordinates.items()}
+  # values = [squares(digit_coordinates_json[str(i)])]
+  values = [squares(digit_coordinates[str(i)]) for i in range(10)]
   if dbg:
     print('digit_distance')
-    # print(values)
+    # print(flatn(values))
     for i in range(10):
       print(f'{i}: {values[i]}') 
 
-  digit_coordinates_json = {key: [(int(x), int(y)) for x, y in values] for key, values in digit_coordinates.items()}
   # pts = [digit_coordinates_json[str(i)] for i in range(10)]
   pts = [digit_coordinates[str(i)] for i in range(10)]
   if dbg:
@@ -116,7 +104,9 @@ def analyze(digit_coordinates, digit_thresholds):
     for i in range(10):
       print(f'{i}: {digit_coordinates[str(i)]}') 
   
-  digit_thresholds_json = {key: [float(value) for value in values] for key, values in digit_thresholds.items()}
+  # _IF_ TypeError: Object of type float32 is not JSON serializable _THEN_ use
+  # digit_thresholds_json = {key: [float(value) for value in values] 
+  #   for key, values in digit_thresholds.items()}
   # thr = [digit_thresholds_json[str(i)] for i in range(10)]
   thr = [digit_thresholds[str(i)] for i in range(10)]
   if dbg:
@@ -127,7 +117,7 @@ def analyze(digit_coordinates, digit_thresholds):
 
   digits = [[i] * len(values[i]) for i in range(10)]
 
-  sorted_combined = sorted(zip( flatn(values), flatn(digits), flatn(pts), flatn(thr) ), key=lambda x: x[0])
+  sorted_combined = sorted(zip(* [flatn(x) for x in [values, digits, pts, thr]] )) #, key=lambda x: x[0])
   sorted_distance, sorted_digits, sorted_pts, sorted_thr = zip(*sorted_combined)
   if dbg:
     print('digit_sorted_combined')
@@ -152,7 +142,10 @@ def show(crop_image):
     exit()
   cv2.destroyWindow('crop')
 
-def template_matching(crop_image, templates, digit_coordinates, digit_thresholds):
+def template_matching(crop_image, templates):
+    digit_coordinates = {str(i): [] for i in range(10)}
+    digit_thresholds  = {str(i): [] for i in range(10)}
+ 
     # Perform template matching for each digit
     for i, template in enumerate(templates):
 
@@ -186,7 +179,6 @@ eras = 12
 db = [ [['','','','',''] for j in range(eras)] for i in range(cities) ]
 
 for city in range(len(db)):
-  # path = glob.glob('4/foe22c.png')
   path = glob.glob(f'{city+1}/*.png')
   print(f'\ncity={city}, path={path}')
   if not path: continue
@@ -205,7 +197,6 @@ for city in range(len(db)):
     viewport = large_image[MPy+69:MPy+69+373,MPx+6:MPx+6+690]
     print(f'{mn:.3f}',mnLoc,'anchor') # ,viewport.shape,viewport.dtype)
     # show(viewport)
-
 
     for i, era in enumerate(headings):
 
@@ -226,14 +217,11 @@ for city in range(len(db)):
         # then some data will be below the viewport
 
         for j in [0,1]:
-          digit_coordinates = {str(i): [] for i in range(10)}
-          digit_thresholds  = {str(i): [] for i in range(10)}
-
           crop_image = viewport[MPy+32:MPy+32+130,MPx+270+j*350:MPx+270+j*350+60]
-          db[city][i*2+j] = template_matching(crop_image, templates, digit_coordinates, digit_thresholds)
+          db[city][i*2+j] = template_matching(crop_image, templates)
           # show(crop_image)
 
-          if j == 0: # dark(i*2+j): #
+          if j == 0:
             cropped_images_top.append(crop_image)
           else:
             cropped_images_bottom.append(crop_image)
