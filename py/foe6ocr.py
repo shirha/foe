@@ -117,6 +117,12 @@ def analyze(digit_coordinates, digit_thresholds):
 
   digits = [[i] * len(values[i]) for i in range(10)]
 
+  # a = [[3, 2, 1], [(48, 6), (49, 86), (49, 87)], ['z', 'a', 'f']]
+  # print(a)
+  # sorted_a = [list(t) for t in zip(*sorted(zip(*a)))]
+  # print(sorted_a)
+  # quit()
+
   sorted_combined = sorted(zip(* [flatn(x) for x in [values, digits, pts, thr]] )) #, key=lambda x: x[0])
   sorted_distance, sorted_digits, sorted_pts, sorted_thr = zip(*sorted_combined)
   if dbg:
